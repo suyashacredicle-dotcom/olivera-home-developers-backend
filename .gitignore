@@ -1,0 +1,29 @@
+
+# Database credentials and environment files
+.env
+.env.*
+
+
+# Database exports and backups
+*.sql
+*.sql.gz
+*.zip
+*.bak
+
+# Private gallery photos
+uploads/gallery/*
+
+# Keep gallery security configuration
+!uploads/gallery/.htaccess
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
