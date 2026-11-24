@@ -63,8 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         try {
 
-            // GET CURRENT PASSWORD HASH
-
             $stmt = $pdo->prepare("
                 SELECT password
                 FROM admins
@@ -77,8 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ]);
 
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // VERIFY CURRENT PASSWORD
 
             if (!$admin) {
 
@@ -132,8 +128,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             } else {
 
-                // HASH NEW PASSWORD
-
                 $hashedPassword = password_hash(
                     $newPassword,
                     PASSWORD_DEFAULT
@@ -145,8 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $messageType = "error";
 
                 } else {
-
-                    // UPDATE PASSWORD
 
                     $stmt = $pdo->prepare("
                         UPDATE admins
@@ -161,11 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     if ($stmt->rowCount() === 1) {
 
-                        // REGENERATE SESSION ID
-
                         session_regenerate_id(true);
-
-                        // GENERATE FRESH CSRF TOKEN
 
                         $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
 
@@ -224,7 +212,7 @@ function e($value) {
 
         body {
             margin: 0;
-            background: #f4f6fa;
+            background: #f5f7fb;
             font-family: Arial, Helvetica, sans-serif;
             color: #263247;
         }
@@ -263,9 +251,9 @@ function e($value) {
             padding: 12px 14px;
             color: #cbd5e1;
             text-decoration: none;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 14px;
-            transition: 0.2s;
+            transition: background 0.2s, color 0.2s;
         }
 
         .sidebar-menu a:hover {
@@ -297,7 +285,23 @@ function e($value) {
         }
 
         .page-header {
-            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 27px;
+        }
+
+        .page-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #eaf0ff;
+            color: #315fbd;
+            font-size: 23px;
         }
 
         .page-header h1 {
@@ -310,22 +314,29 @@ function e($value) {
             margin: 0;
             color: #718096;
             font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: #8995a7;
+            margin-top: 6px;
         }
 
         /* PASSWORD CARD */
 
         .password-card {
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 13px;
             padding: 30px;
             max-width: 850px;
-            box-shadow: 0 3px 15px rgba(20, 35, 60, 0.05);
-            border: 1px solid #e8edf4;
+            border: 1px solid #e7ecf3;
+            box-shadow: 0 4px 18px rgba(20, 35, 60, 0.045);
         }
 
         .card-heading {
             border-bottom: 1px solid #edf0f5;
-            padding-bottom: 18px;
+            padding-bottom: 19px;
             margin-bottom: 25px;
         }
 
@@ -339,6 +350,7 @@ function e($value) {
             margin: 0;
             color: #8290a3;
             font-size: 13px;
+            line-height: 1.6;
         }
 
         .form-group {
@@ -349,9 +361,11 @@ function e($value) {
             display: block;
             margin-bottom: 9px;
             color: #35445a;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
+
+        /* PASSWORD INPUTS */
 
         .password-wrapper {
             position: relative;
@@ -361,19 +375,19 @@ function e($value) {
         .password-wrapper input {
             display: block;
             width: 100%;
-            padding: 12px 75px 12px 14px;
-            border: 1px solid #d8e0eb;
-            border-radius: 7px;
+            padding: 13px 75px 13px 14px;
+            border: 1px solid #dce3ed;
+            border-radius: 8px;
             font-size: 14px;
             color: #263247;
             background: #ffffff;
             outline: none;
-            transition: 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .password-wrapper input:focus {
             border-color: #4776d0;
-            box-shadow: 0 0 0 3px rgba(71,118,208,0.12);
+            box-shadow: 0 0 0 3px rgba(71,118,208,0.11);
         }
 
         .toggle-password {
@@ -387,7 +401,7 @@ function e($value) {
             font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            padding: 6px;
+            padding: 7px;
         }
 
         .toggle-password:hover {
@@ -397,11 +411,11 @@ function e($value) {
         /* PASSWORD REQUIREMENTS */
 
         .requirements-box {
-            background: #f7f9fc;
+            background: #f8faff;
             border: 1px solid #e5eaf2;
-            border-radius: 9px;
-            padding: 18px 20px;
-            margin: 25px 0;
+            border-radius: 10px;
+            padding: 19px 21px;
+            margin: 26px 0;
         }
 
         .requirements-box h3 {
@@ -411,24 +425,35 @@ function e($value) {
         }
 
         .requirements-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px 20px;
             margin: 0;
-            padding-left: 20px;
+            padding: 0;
+            list-style: none;
             color: #66758b;
             font-size: 13px;
-            line-height: 2;
+        }
+
+        .requirements-list li::before {
+            content: "✓";
+            color: #315fbd;
+            font-weight: bold;
+            margin-right: 9px;
         }
 
         /* MESSAGES */
 
         .message {
-            padding: 13px 16px;
-            border-radius: 7px;
+            padding: 14px 17px;
+            border-radius: 8px;
             margin-bottom: 22px;
             font-size: 14px;
+            line-height: 1.5;
         }
 
         .message.success {
-            background: #e8f7ee;
+            background: #eaf7ef;
             color: #187444;
             border: 1px solid #c7ead5;
         }
@@ -447,18 +472,26 @@ function e($value) {
             gap: 12px;
             flex-wrap: wrap;
             margin-top: 25px;
+            padding-top: 23px;
+            border-top: 1px solid #edf0f5;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 12px 20px;
             border: none;
-            border-radius: 7px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
         }
 
         .btn-primary {
@@ -479,43 +512,31 @@ function e($value) {
             background: #dfe6f0;
         }
 
-        /* FORGOT PASSWORD */
-
         .forgot-password {
-            margin-top: 15px;
+            margin-top: 18px;
             text-align: right;
         }
 
-        .forgot-password a {
+        .forgot-password a,
+        .account-links a {
             color: #315fbd;
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
         }
 
-        .forgot-password a:hover {
-            color: #244b99;
-            text-decoration: underline;
-        }
-
-        .account-links {
-            margin-top: 22px;
-            padding-top: 20px;
-            border-top: 1px solid #edf0f5;
-        }
-
-        .account-links a {
-            color: #315fbd;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
+        .forgot-password a:hover,
         .account-links a:hover {
             text-decoration: underline;
         }
 
-        /* RESPONSIVE DESIGN */
+        .account-links {
+            margin-top: 23px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f5;
+        }
+
+        /* RESPONSIVE */
 
         @media (max-width: 850px) {
 
@@ -548,22 +569,29 @@ function e($value) {
             }
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
 
             .main-content {
-                padding: 15px;
+                padding: 17px;
             }
 
             .password-card {
                 padding: 20px;
             }
 
-            .sidebar-menu {
-                grid-template-columns: 1fr;
-            }
-
             .page-header h1 {
                 font-size: 23px;
+            }
+
+            .requirements-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .sidebar-menu {
+                grid-template-columns: 1fr;
             }
 
             .form-actions {
@@ -572,7 +600,12 @@ function e($value) {
             }
 
             .form-actions .btn {
+                width: 100%;
                 text-align: center;
+            }
+
+            .forgot-password {
+                text-align: left;
             }
         }
 
@@ -656,11 +689,19 @@ function e($value) {
 
         <div class="page-header">
 
-            <h1>Change Password</h1>
+            <div class="page-icon">🔒</div>
 
-            <p>
-                Keep your administrator account secure by updating your password.
-            </p>
+            <div>
+                <h1>Change Password</h1>
+
+                <p>
+                    Keep your administrator account secure by updating your password.
+                </p>
+
+                <div class="breadcrumb">
+                    Admin Panel / My Account / Change Password
+                </div>
+            </div>
 
         </div>
 
@@ -692,8 +733,6 @@ function e($value) {
                     value="<?php echo e($_SESSION["csrf_token"]); ?>"
                 >
 
-                <!-- CURRENT PASSWORD -->
-
                 <div class="form-group">
 
                     <label for="current_password">
@@ -724,8 +763,6 @@ function e($value) {
                     </div>
 
                 </div>
-
-                <!-- NEW PASSWORD -->
 
                 <div class="form-group">
 
@@ -759,8 +796,6 @@ function e($value) {
 
                 </div>
 
-                <!-- CONFIRM PASSWORD -->
-
                 <div class="form-group">
 
                     <label for="confirm_password">
@@ -793,8 +828,6 @@ function e($value) {
 
                 </div>
 
-                <!-- PASSWORD REQUIREMENTS -->
-
                 <div class="requirements-box">
 
                     <h3>Your new password must contain:</h3>
@@ -808,8 +841,6 @@ function e($value) {
                     </ul>
 
                 </div>
-
-                <!-- BUTTONS -->
 
                 <div class="form-actions">
 
@@ -828,8 +859,6 @@ function e($value) {
                     </a>
 
                 </div>
-
-                <!-- FORGOT PASSWORD LINK -->
 
                 <div class="forgot-password">
 
@@ -854,8 +883,6 @@ function e($value) {
     </main>
 
 </div>
-
-<!-- SHOW / HIDE PASSWORD SCRIPT -->
 
 <script>
 

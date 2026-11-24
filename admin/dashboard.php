@@ -327,8 +327,6 @@ if ($isManager || $isSalesEmployee) {
 
 if ($isManager || $isSalesEmployee) {
 
-    // New leads created today
-
     $leadTodaySql = "
         SELECT COUNT(*)
         FROM leads
@@ -348,8 +346,6 @@ if ($isManager || $isSalesEmployee) {
     }
 
     $todaysNewLeads = (int) $stmt->fetchColumn();
-
-    // Follow-ups scheduled for today
 
     $followupTodaySql = "
         SELECT COUNT(*)
@@ -372,8 +368,6 @@ if ($isManager || $isSalesEmployee) {
     }
 
     $todaysFollowups = (int) $stmt->fetchColumn();
-
-    // Site visits scheduled for today
 
     $visitTodaySql = "
         SELECT COUNT(*)
@@ -468,18 +462,18 @@ if (
 // --------------------------------------------------
 
 $leadColors = [
-    "#2563eb",
-    "#f59e0b",
-    "#16a34a",
-    "#dc2626"
+    "#3569a8",
+    "#d99036",
+    "#299764",
+    "#d85b63"
 ];
 
 $visitColors = [
-    "#2563eb",
-    "#16a34a",
-    "#f59e0b",
-    "#dc2626",
-    "#7c3aed",
+    "#3569a8",
+    "#299764",
+    "#d99036",
+    "#d85b63",
+    "#8265bd",
     "#0891b2"
 ];
 
@@ -510,15 +504,32 @@ $visitTotal = array_sum($siteVisitChart);
 
     <style>
 
+        /* --------------------------------------------------
+           GLOBAL DESIGN
+        -------------------------------------------------- */
+
         * {
             box-sizing: border-box;
         }
 
+        :root {
+            --navy: #17365d;
+            --navy-dark: #102944;
+            --blue: #3569a8;
+            --background: #f5f7fb;
+            --surface: #ffffff;
+            --border: #e5eaf1;
+            --text: #1d2939;
+            --muted: #667085;
+            --radius: 14px;
+            --shadow: 0 5px 20px rgba(16, 41, 68, 0.055);
+        }
+
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
+            font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
         }
 
         /* SIDEBAR */
@@ -529,69 +540,79 @@ $visitTotal = array_sum($siteVisitChart);
             position: fixed;
             top: 0;
             left: 0;
-            background: #172554;
+            background: linear-gradient(
+                180deg,
+                var(--navy-dark),
+                var(--navy)
+            );
             color: white;
-            padding: 22px 15px;
+            padding: 25px 16px;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
             z-index: 100;
+            box-shadow: 5px 0 22px rgba(16, 41, 68, 0.08);
         }
 
         .sidebar-header {
             text-align: center;
-            padding: 10px 10px 22px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            margin-bottom: 20px;
+            padding: 10px 10px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.13);
+            margin-bottom: 23px;
         }
 
         .sidebar-header img {
-            max-width: 150px;
-            max-height: 65px;
+            max-width: 155px;
+            max-height: 68px;
             object-fit: contain;
             margin-bottom: 12px;
         }
 
         .sidebar-header h2 {
             margin: 0 0 7px;
-            font-size: 19px;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.5;
             color: white;
             overflow-wrap: anywhere;
         }
 
         .sidebar-header p {
             margin: 0;
-            color: #bfdbfe;
+            color: #c3d5eb;
             font-size: 12px;
+            letter-spacing: 0.4px;
         }
 
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 7px;
         }
 
         .sidebar-menu a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 13px;
-            border-radius: 7px;
-            color: #dbeafe;
+            padding: 12px 14px;
+            min-height: 43px;
+            border-radius: 9px;
+            color: #d7e3f1;
             text-decoration: none;
             font-size: 13px;
-            transition: 0.2s;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .sidebar-menu a:hover {
-            background: #1e40af;
+            background: rgba(255,255,255,0.11);
             color: white;
         }
 
         .sidebar-menu a.active {
-            background: #2563eb;
-            color: white;
-            font-weight: bold;
+            background: white;
+            color: var(--navy);
+            font-weight: 700;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
         }
 
         .menu-icon {
@@ -603,7 +624,7 @@ $visitTotal = array_sum($siteVisitChart);
 
         .notification-badge {
             display: inline-block;
-            background: #dc2626;
+            background: #e5484d;
             color: white;
             font-size: 11px;
             font-weight: bold;
@@ -614,7 +635,8 @@ $visitTotal = array_sum($siteVisitChart);
 
         .sidebar-footer {
             margin-top: auto;
-            padding-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.13);
         }
 
         .sidebar-footer form {
@@ -624,24 +646,25 @@ $visitTotal = array_sum($siteVisitChart);
         .sidebar-footer button {
             width: 100%;
             padding: 12px;
-            border: none;
-            border-radius: 7px;
-            background: #dc2626;
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 9px;
+            background: rgba(220, 38, 38, 0.16);
             color: white;
             font-size: 13px;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.2s ease;
         }
 
         .sidebar-footer button:hover {
-            background: #b91c1c;
+            background: #b42318;
         }
 
         /* MAIN CONTENT */
 
         .main-content {
             margin-left: 255px;
-            padding: 30px;
+            padding: 34px;
             min-height: 100vh;
         }
 
@@ -651,50 +674,57 @@ $visitTotal = array_sum($siteVisitChart);
             align-items: center;
             flex-wrap: wrap;
             gap: 18px;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
 
         .welcome-header h1 {
             margin: 0 0 8px;
-            font-size: 27px;
-            color: #0f172a;
+            font-size: 28px;
+            color: var(--navy-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .welcome-header p {
             margin: 0;
             font-size: 14px;
-            color: #64748b;
+            color: var(--muted);
+            line-height: 1.6;
         }
 
         .admin-profile-label {
             background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 9px;
-            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 13px 17px;
             font-size: 13px;
             color: #334155;
+            box-shadow: 0 2px 8px rgba(16,41,68,0.035);
         }
 
         .admin-profile-label strong {
-            color: #1d4ed8;
+            color: var(--blue);
         }
 
         /* SECTION HEADINGS */
 
         .section-heading {
-            margin: 30px 0 17px;
+            margin: 32px 0 18px;
         }
 
         .section-heading h2 {
             margin: 0 0 7px;
             font-size: 19px;
-            color: #0f172a;
+            color: var(--navy-dark);
+            font-weight: 700;
+            letter-spacing: -0.2px;
         }
 
         .section-heading p {
             margin: 0;
             font-size: 13px;
-            color: #64748b;
+            color: var(--muted);
+            line-height: 1.6;
         }
 
         /* STATISTIC CARDS */
@@ -703,97 +733,107 @@ $visitTotal = array_sum($siteVisitChart);
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
             gap: 18px;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
         }
 
         .dashboard-card {
             min-width: 0;
-            background: white;
-            padding: 21px;
-            border: 1px solid #e2e8f0;
-            border-radius: 11px;
-            box-shadow: 0 3px 12px rgba(15,23,42,0.04);
+            background: var(--surface);
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 25px rgba(16,41,68,0.09);
         }
 
         .dashboard-card h3 {
             margin: 0 0 12px;
-            font-size: 14px;
-            color: #475569;
+            font-size: 13px;
+            color: var(--muted);
             font-weight: 600;
         }
 
         .dashboard-card h1 {
             margin: 0 0 8px;
-            font-size: 30px;
-            color: #0f172a;
+            font-size: 32px;
+            color: var(--navy-dark);
+            font-weight: 700;
+            letter-spacing: -0.7px;
         }
 
         .dashboard-card p {
             margin: 0;
             font-size: 12px;
-            line-height: 1.6;
-            color: #64748b;
+            line-height: 1.7;
+            color: var(--muted);
         }
 
         .dashboard-card a {
             display: inline-block;
             margin-top: 13px;
-            color: #2563eb;
+            color: var(--blue);
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 600;
             text-decoration: none;
         }
 
         .dashboard-card a:hover {
+            color: var(--navy-dark);
             text-decoration: underline;
         }
 
         .stat-card {
-            border-top: 4px solid #2563eb;
+            border-top: 3px solid #3569a8;
         }
 
         .stat-card.green {
-            border-top-color: #16a34a;
+            border-top-color: #299764;
         }
 
         .stat-card.orange {
-            border-top-color: #ea580c;
+            border-top-color: #d99036;
         }
 
         .stat-card.purple {
-            border-top-color: #7c3aed;
+            border-top-color: #8265bd;
         }
 
         .stat-card.red {
-            border-top-color: #dc2626;
+            border-top-color: #d85b63;
         }
 
         /* TODAY'S WORK */
 
         .today-card {
-            border-left: 4px solid #2563eb;
+            border-left: 3px solid #3569a8;
         }
 
         .today-card.green {
-            border-left-color: #16a34a;
+            border-left-color: #299764;
         }
 
         .today-card.orange {
-            border-left-color: #ea580c;
+            border-left-color: #d99036;
         }
 
         .today-card.purple {
-            border-left-color: #7c3aed;
+            border-left-color: #8265bd;
         }
 
         .today-date {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            background: #eff6ff;
-            color: #1d4ed8;
-            padding: 8px 12px;
-            border-radius: 7px;
+            background: #eaf1f9;
+            color: var(--navy);
+            padding: 9px 13px;
+            border: 1px solid #dce7f3;
+            border-radius: 9px;
             font-size: 12px;
             font-weight: bold;
             margin-bottom: 15px;
@@ -809,24 +849,26 @@ $visitTotal = array_sum($siteVisitChart);
         }
 
         .chart-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 3px 12px rgba(15,23,42,0.04);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
             min-width: 0;
         }
 
         .chart-card h3 {
             margin: 0 0 7px;
-            color: #0f172a;
+            color: var(--navy-dark);
             font-size: 16px;
+            font-weight: 700;
         }
 
         .chart-description {
             margin: 0 0 22px;
             font-size: 12px;
-            color: #64748b;
+            color: var(--muted);
+            line-height: 1.6;
         }
 
         .chart-content {
@@ -847,6 +889,7 @@ $visitTotal = array_sum($siteVisitChart);
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 3px 12px rgba(16,41,68,0.07);
         }
 
         .pie-chart::after {
@@ -866,13 +909,13 @@ $visitTotal = array_sum($siteVisitChart);
 
         .pie-chart-center strong {
             display: block;
-            color: #0f172a;
+            color: var(--navy-dark);
             font-size: 25px;
         }
 
         .pie-chart-center span {
             display: block;
-            color: #64748b;
+            color: var(--muted);
             font-size: 11px;
             margin-top: 4px;
         }
@@ -880,7 +923,7 @@ $visitTotal = array_sum($siteVisitChart);
         .chart-legend {
             display: flex;
             flex-direction: column;
-            gap: 13px;
+            gap: 15px;
             min-width: 125px;
         }
 
@@ -888,7 +931,7 @@ $visitTotal = array_sum($siteVisitChart);
             display: flex;
             align-items: center;
             gap: 9px;
-            color: #475569;
+            color: #475467;
             font-size: 12px;
         }
 
@@ -903,16 +946,17 @@ $visitTotal = array_sum($siteVisitChart);
             margin-left: auto;
             padding-left: 12px;
             font-weight: bold;
-            color: #0f172a;
+            color: var(--navy-dark);
         }
 
         .empty-chart {
             width: 100%;
             padding: 45px 15px;
             text-align: center;
-            background: #f8fafc;
-            border-radius: 8px;
-            color: #64748b;
+            background: #f7f9fc;
+            border: 1px dashed #d6dfeb;
+            border-radius: 10px;
+            color: var(--muted);
             font-size: 13px;
         }
 
@@ -921,8 +965,19 @@ $visitTotal = array_sum($siteVisitChart);
         .page-footer {
             text-align: center;
             padding: 25px 10px;
-            color: #94a3b8;
+            color: #8793a5;
             font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 25px;
+        }
+
+        /* KEYBOARD ACCESSIBILITY */
+
+        .sidebar-menu a:focus-visible,
+        .dashboard-card a:focus-visible,
+        .sidebar-footer button:focus-visible {
+            outline: 3px solid #9cc5f1;
+            outline-offset: 3px;
         }
 
         /* RESPONSIVE */
@@ -942,7 +997,7 @@ $visitTotal = array_sum($siteVisitChart);
 
             .main-content {
                 margin-left: 220px;
-                padding: 23px;
+                padding: 25px;
             }
         }
 
@@ -952,7 +1007,7 @@ $visitTotal = array_sum($siteVisitChart);
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 17px;
+                padding: 18px;
             }
 
             .sidebar-header {
@@ -978,11 +1033,15 @@ $visitTotal = array_sum($siteVisitChart);
 
             .main-content {
                 margin-left: 0;
-                padding: 18px;
+                padding: 19px;
             }
 
             .welcome-header h1 {
-                font-size: 22px;
+                font-size: 23px;
+            }
+
+            .admin-profile-label {
+                width: 100%;
             }
 
             .dashboard-cards {
@@ -991,15 +1050,15 @@ $visitTotal = array_sum($siteVisitChart);
             }
 
             .dashboard-card {
-                padding: 16px;
+                padding: 17px;
             }
 
             .dashboard-card h1 {
-                font-size: 25px;
+                font-size: 26px;
             }
 
             .chart-card {
-                padding: 17px;
+                padding: 18px;
             }
 
             .pie-chart {

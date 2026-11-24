@@ -1,4 +1,3 @@
-
 <?php
 
 require_once "../includes/permissions.php";
@@ -540,370 +539,575 @@ $recentLeads = $recentLeadsQuery->fetchAll(PDO::FETCH_ASSOC);
 
     <title>CRM Reports</title>
 
-    <style>
+    
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    :root {
+        --report-primary: #315fbd;
+        --report-primary-dark: #244b9b;
+        --report-navy: #17243a;
+        --report-background: #f4f7fb;
+        --report-surface: #ffffff;
+        --report-border: #e5eaf2;
+        --report-text: #263247;
+        --report-muted: #718096;
+        --report-green: #16804b;
+        --report-red: #c43d45;
+        --report-orange: #bd781c;
+    }
 
+    body {
+        margin: 0;
+        padding: 30px;
+        background: var(--report-background);
+        color: var(--report-text);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        margin: 0 0 8px;
+        color: var(--report-navy);
+        font-size: 29px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    h2 {
+        margin: 0 0 16px;
+        color: var(--report-navy);
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    h3 {
+        color: var(--report-text);
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .container > p {
+        margin: 0 0 22px;
+        color: var(--report-muted);
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin: 22px 0 27px;
+    }
+
+    .nav-links a {
+        display: inline-flex;
+        align-items: center;
+        padding: 9px 15px;
+        margin: 0;
+        border: 1px solid var(--report-border);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--report-text);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s ease, color 0.2s ease,
+                    border-color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+        border-color: var(--report-primary);
+        background: var(--report-primary);
+        color: #fff;
+    }
+
+    .summary-grid,
+    .conversion-grid,
+    .date-range-summary,
+    .advertisement-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin: 18px 0 24px;
+    }
+
+    .summary-card,
+    .card {
+        margin-bottom: 23px;
+        padding: 24px;
+        border: 1px solid var(--report-border);
+        border-radius: 13px;
+        background: var(--report-surface);
+        box-shadow: 0 3px 14px rgba(27, 43, 68, 0.045);
+    }
+
+    .summary-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 115px;
+    }
+
+    .summary-card::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--report-primary);
+        content: "";
+    }
+
+    .summary-card h3 {
+        margin: 0 0 12px;
+        color: var(--report-muted);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .summary-card .number {
+        color: var(--report-navy);
+        font-size: 31px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .card > p {
+        color: var(--report-muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid var(--report-border);
+        border-radius: 9px;
+    }
+
+    table {
+        width: 100%;
+        min-width: 750px;
+        border-collapse: collapse;
+        background: #fff;
+    }
+
+    th,
+    td {
+        padding: 13px 14px;
+        border-bottom: 1px solid var(--report-border);
+        text-align: left;
+        vertical-align: top;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f3f6fb;
+        color: #42516a;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    td {
+        color: #445168;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    tbody tr:hover {
+        background: #f8faff;
+    }
+
+    td strong {
+        color: var(--report-navy);
+    }
+
+    .status-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 13px;
+    }
+
+    .status-item {
+        padding: 16px;
+        border: 1px solid var(--report-border);
+        border-radius: 9px;
+        background: #f8faff;
+        color: #536178;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .status-item strong {
+        display: block;
+        margin-top: 7px;
+        color: var(--report-primary);
+        font-size: 24px;
+    }
+
+    .conversion-item {
+        padding: 19px;
+        border: 1px solid var(--report-border);
+        border-radius: 10px;
+        background: #f8faff;
+    }
+
+    .conversion-item h3 {
+        margin: 0 0 10px;
+        color: var(--report-muted);
+        font-size: 13px;
+    }
+
+    .conversion-item .number {
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .conversion-total .number {
+        color: var(--report-primary);
+    }
+
+    .conversion-success .number {
+        color: var(--report-green);
+    }
+
+    .conversion-lost .number {
+        color: var(--report-red);
+    }
+
+    .conversion-active .number {
+        color: var(--report-orange);
+    }
+
+    .conversion-rate-section {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--report-border);
+    }
+
+    .conversion-rate-heading {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        color: var(--report-text);
+        font-weight: 600;
+    }
+
+    .conversion-rate-heading strong {
+        color: var(--report-green);
+        font-size: 24px;
+    }
+
+    .progress-track {
+        width: 100%;
+        height: 12px;
+        overflow: hidden;
+        border-radius: 20px;
+        background: #e8edf4;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 20px;
+        background: var(--report-green);
+        transition: width 0.3s ease;
+    }
+
+    .conversion-note,
+    .employee-performance-note,
+    .monthly-report-note,
+    .source-report-note,
+    .followup-report-note,
+    .date-range-note,
+    .advertisement-report-note {
+        margin: 12px 0 17px;
+        color: var(--report-muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .employee-rate,
+    .monthly-rate,
+    .source-rate,
+    .advertisement-campaign-rate {
+        color: var(--report-green);
+        font-weight: 700;
+    }
+
+    .followup-type-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 13px;
+        margin: 18px 0 25px;
+    }
+
+    .followup-type-item {
+        padding: 17px;
+        border: 1px solid var(--report-border);
+        border-radius: 9px;
+        background: #f8faff;
+    }
+
+    .followup-type-item span {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--report-muted);
+        font-size: 13px;
+    }
+
+    .followup-type-item strong {
+        display: block;
+        color: var(--report-primary);
+        font-size: 24px;
+    }
+
+    .followup-total {
+        color: var(--report-primary);
+        font-weight: 700;
+    }
+
+    .date-range-form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: 14px;
+        margin: 18px 0 22px;
+        padding: 19px;
+        border: 1px solid var(--report-border);
+        border-radius: 10px;
+        background: #f8faff;
+    }
+
+    .date-range-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .date-range-field label {
+        color: var(--report-text);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .date-range-field input {
+        min-width: 185px;
+        min-height: 42px;
+        padding: 9px 11px;
+        border: 1px solid #d6deea;
+        border-radius: 7px;
+        background: #fff;
+        color: var(--report-text);
+        font-family: inherit;
+        font-size: 13px;
+    }
+
+    .date-range-field input:focus {
+        outline: none;
+        border-color: var(--report-primary);
+        box-shadow: 0 0 0 3px rgba(49, 95, 189, 0.11);
+    }
+
+    .date-range-form button,
+    .date-range-reset {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 10px 17px;
+        border: 1px solid var(--report-primary);
+        border-radius: 7px;
+        background: var(--report-primary);
+        color: #fff;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .date-range-form button:hover {
+        background: var(--report-primary-dark);
+    }
+
+    .date-range-reset {
+        border-color: #d6deea;
+        background: #fff;
+        color: var(--report-text);
+    }
+
+    .date-range-reset:hover {
+        background: #edf2f8;
+    }
+
+    .date-range-error {
+        margin: 12px 0;
+        padding: 13px 15px;
+        border: 1px solid #f1c8ca;
+        border-radius: 8px;
+        background: #fff5f5;
+        color: #a52c34;
+        font-size: 13px;
+    }
+
+    .date-range-summary-item,
+    .advertisement-summary-item {
+        padding: 17px;
+        border: 1px solid var(--report-border);
+        border-radius: 9px;
+        background: #f8faff;
+    }
+
+    .date-range-summary-item span,
+    .advertisement-summary-item span {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--report-muted);
+        font-size: 12px;
+    }
+
+    .date-range-summary-item strong,
+    .advertisement-summary-item strong {
+        display: block;
+        color: var(--report-primary);
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .date-range-summary-item.converted strong,
+    .advertisement-summary-item.converted strong {
+        color: var(--report-green);
+    }
+
+    .date-range-summary-item.lost strong,
+    .advertisement-summary-item.lost strong {
+        color: var(--report-red);
+    }
+
+    .date-range-summary-item.active strong {
+        color: var(--report-orange);
+    }
+
+    .empty {
+        padding: 12px 0;
+        color: var(--report-muted);
+        font-size: 13px;
+    }
+
+    .tracking-cell {
+        min-width: 180px;
+        max-width: 260px;
+        overflow-wrap: anywhere;
+        font-size: 13px;
+    }
+
+    .tracking-cell div {
+        margin-bottom: 5px;
+    }
+
+    .tracking-cell strong {
+        color: var(--report-text);
+    }
+
+    @media (max-width: 900px) {
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 25px;
-            color: #333;
+            padding: 20px;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: auto;
+        .card,
+        .summary-card {
+            padding: 19px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 13px;
         }
 
-        h1, h2 {
-            color: #222;
+        h1 {
+            font-size: 24px;
         }
 
-        .nav-links {
-            margin-bottom: 25px;
-        }
-
-        .nav-links a {
-            display: inline-block;
-            margin-right: 15px;
-            margin-bottom: 8px;
-            color: #1769aa;
-            text-decoration: none;
-            font-weight: bold;
+        h2 {
+            font-size: 17px;
         }
 
         .summary-grid,
         .conversion-grid,
         .date-range-summary,
         .advertisement-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
         }
 
-        .summary-card,
-        .card {
-            background: white;
-            padding: 22px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .summary-card h3 {
-            margin: 0 0 12px;
-            color: #666;
-            font-size: 15px;
+        .card,
+        .summary-card {
+            padding: 15px;
+            border-radius: 10px;
         }
 
         .summary-card .number {
-            font-size: 30px;
-            font-weight: bold;
-            color: #1769aa;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 750px;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background: #f0f2f5;
-        }
-
-        .status-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-        }
-
-        .status-item {
-            background: #f4f6f9;
-            padding: 15px;
-            border-radius: 6px;
-        }
-
-        .status-item strong {
-            display: block;
-            font-size: 22px;
-            color: #1769aa;
-            margin-top: 7px;
+            font-size: 25px;
         }
 
         .conversion-item {
-            padding: 20px;
-            border-radius: 8px;
-            background: #f4f6f9;
-        }
-
-        .conversion-item h3 {
-            margin: 0 0 12px;
-            font-size: 14px;
-            color: #666;
+            padding: 14px;
         }
 
         .conversion-item .number {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .conversion-total .number {
-            color: #1769aa;
-        }
-
-        .conversion-success .number {
-            color: #16803c;
-        }
-
-        .conversion-lost .number {
-            color: #d93025;
-        }
-
-        .conversion-active .number {
-            color: #d97706;
-        }
-
-        .conversion-rate-section {
-            margin-top: 25px;
-        }
-
-        .conversion-rate-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
+            font-size: 23px;
         }
 
         .conversion-rate-heading strong {
-            font-size: 24px;
-            color: #16803c;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 22px;
-            background: #e5e7eb;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #16803c;
-            border-radius: 20px;
-        }
-
-        .conversion-note,
-        .employee-performance-note,
-        .monthly-report-note,
-        .source-report-note,
-        .followup-report-note,
-        .date-range-note,
-        .advertisement-report-note {
-            color: #777;
-            font-size: 13px;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .employee-rate,
-        .monthly-rate,
-        .source-rate,
-        .advertisement-campaign-rate {
-            font-weight: bold;
-            color: #16803c;
-        }
-
-        .followup-type-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin: 18px 0 25px;
-        }
-
-        .followup-type-item {
-            background: #f4f6f9;
-            padding: 16px;
-            border-radius: 6px;
-        }
-
-        .followup-type-item span {
-            display: block;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .followup-type-item strong {
-            display: block;
-            color: #1769aa;
-            font-size: 24px;
-        }
-
-        .followup-total {
-            font-weight: bold;
-            color: #1769aa;
+            font-size: 21px;
         }
 
         .date-range-form {
-            display: flex;
-            align-items: end;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin: 18px 0 22px;
-            padding: 18px;
-            background: #f4f6f9;
-            border-radius: 8px;
+            align-items: stretch;
         }
 
-        .date-range-field {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .date-range-field label {
-            font-size: 14px;
-            font-weight: bold;
-            color: #555;
-        }
-
+        .date-range-field,
         .date-range-field input {
-            min-width: 180px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
+            width: 100%;
         }
 
         .date-range-form button,
         .date-range-reset {
-            display: inline-block;
-            padding: 11px 17px;
-            border: 0;
-            border-radius: 5px;
-            background: #1769aa;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
+            width: 100%;
         }
 
-        .date-range-reset {
-            background: #666;
+        .nav-links a {
+            padding: 8px 11px;
         }
+    }
 
-        .date-range-error {
-            padding: 12px 15px;
-            margin: 12px 0;
-            border-radius: 5px;
-            background: #fff0f0;
-            color: #b42318;
+    @media (max-width: 380px) {
+        .summary-grid,
+        .conversion-grid,
+        .date-range-summary,
+        .advertisement-summary-grid {
+            grid-template-columns: 1fr;
         }
+    }
+</style>
 
-        .date-range-summary-item,
-        .advertisement-summary-item {
-            padding: 17px;
-            border-radius: 7px;
-            background: #f4f6f9;
-        }
 
-        .date-range-summary-item span,
-        .advertisement-summary-item span {
-            display: block;
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        .date-range-summary-item strong,
-        .advertisement-summary-item strong {
-            display: block;
-            color: #1769aa;
-            font-size: 25px;
-        }
-
-        .date-range-summary-item.converted strong,
-        .advertisement-summary-item.converted strong {
-            color: #16803c;
-        }
-
-        .date-range-summary-item.lost strong,
-        .advertisement-summary-item.lost strong {
-            color: #d93025;
-        }
-
-        .date-range-summary-item.active strong {
-            color: #d97706;
-        }
-
-        .empty {
-            color: #777;
-        }
-
-        .tracking-cell {
-            min-width: 180px;
-            max-width: 260px;
-            overflow-wrap: anywhere;
-            font-size: 13px;
-        }
-
-        .tracking-cell div {
-            margin-bottom: 5px;
-        }
-
-        .tracking-cell strong {
-            color: #444;
-        }
-
-        @media (max-width: 600px) {
-
-            body {
-                padding: 12px;
-            }
-
-            .card,
-            .summary-card {
-                padding: 15px;
-            }
-
-            .conversion-rate-heading strong {
-                font-size: 21px;
-            }
-
-            .date-range-field,
-            .date-range-field input {
-                width: 100%;
-            }
-
-            .date-range-form button,
-            .date-range-reset {
-                text-align: center;
-            }
-
-        }
-
-    </style>
 
 </head>
 

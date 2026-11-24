@@ -740,78 +740,147 @@ function priorityBadgeClass($priority) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Manage Leads</title>
+<title>Manage Leads | Olivera Home Developers</title>
 
 <style>
+
+:root {
+    --primary: #315f91;
+    --primary-dark: #244a73;
+    --primary-light: #eaf1f8;
+    --background: #f5f7fa;
+    --surface: #ffffff;
+    --text: #263445;
+    --muted: #758397;
+    --border: #e4eaf1;
+    --success: #25845b;
+    --danger: #c45151;
+    --warning: #b77a28;
+    --shadow: 0 3px 14px rgba(30, 48, 70, 0.055);
+}
 
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
     margin: 0;
-    color: #222;
-    padding: 20px;
+    color: var(--text);
+    padding: 28px;
+    line-height: 1.5;
 }
 
 main {
-    max-width: 1500px;
-    margin: auto;
+    max-width: 1550px;
+    margin: 0 auto;
+}
+
+a {
+    transition: 0.2s ease;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.page-header h1 {
+    font-size: 27px;
+    margin: 0 0 5px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #25384e;
+}
+
+.page-subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0;
 }
 
 .top-links,
 .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 9px;
+}
+
+.top-links {
+    margin-bottom: 23px;
 }
 
 .top-links a,
 .btn {
-    display: inline-block;
-    padding: 9px 13px;
-    border-radius: 5px;
-    background: #1f5e9c;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 15px;
+    border-radius: 7px;
+    background: var(--primary);
     color: #fff;
     text-decoration: none;
-    border: 0;
+    border: 1px solid transparent;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .top-links a:hover,
 .btn:hover {
-    opacity: .88;
+    background: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
 .panel {
-    background: #fff;
-    padding: 18px;
-    border-radius: 9px;
-    margin-bottom: 18px;
-    box-shadow: 0 2px 8px #0000000c;
+    background: var(--surface);
+    padding: 23px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    margin-bottom: 21px;
+    box-shadow: var(--shadow);
 }
 
-h1,
-h2 {
-    margin-top: 0;
+.panel h2 {
+    font-size: 17px;
+    color: #2d4056;
+    margin: 0 0 19px;
+    font-weight: 700;
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 17px;
+}
+
+.panel-heading h2 {
+    margin: 0;
 }
 
 .filters {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 15px;
     align-items: end;
 }
 
 .filters label,
 .form-grid label {
     display: block;
-    font-weight: bold;
-    font-size: 13px;
+    font-weight: 600;
+    font-size: 12px;
+    color: #526176;
 }
 
 .filters input,
@@ -821,165 +890,261 @@ h2 {
 .form-grid textarea,
 td select {
     width: 100%;
-    padding: 9px;
-    margin-top: 5px;
-    border: 1px solid #ccd2da;
-    border-radius: 5px;
+    padding: 10px 11px;
+    margin-top: 6px;
+    border: 1px solid #dce3eb;
+    border-radius: 7px;
     background: #fff;
+    color: #344458;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filters input:focus,
+.filters select:focus,
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus,
+td select:focus {
+    border-color: #7399bf;
+    box-shadow: 0 0 0 3px rgba(49, 95, 145, 0.09);
+}
+
+.form-grid textarea {
+    resize: vertical;
+    min-height: 43px;
 }
 
 .btn-secondary {
-    background: #667085;
+    background: #68788b;
+}
+
+.btn-secondary:hover {
+    background: #526174;
 }
 
 .btn-green {
-    background: #218653;
+    background: #32815f;
+}
+
+.btn-green:hover {
+    background: #256849;
 }
 
 .btn-red {
-    background: #b42318;
+    background: #bd5555;
+}
+
+.btn-red:hover {
+    background: #a44040;
 }
 
 .btn-orange {
-    background: #b76e00;
+    background: #b77a28;
 }
 
-.table-wrap {
-    overflow-x: auto;
+.btn-orange:hover {
+    background: #98621d;
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 950px;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+    gap: 16px;
+    align-items: end;
 }
 
-th,
-td {
-    padding: 10px;
-    border-bottom: 1px solid #e7eaf0;
-    text-align: left;
-    vertical-align: top;
-}
-
-th {
-    background: #f1f4f8;
+.notice {
+    padding: 13px 16px;
+    border-radius: 8px;
+    margin-bottom: 19px;
     font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
 }
 
-td {
-    font-size: 13px;
+.notice.success {
+    background: #edf7f1;
+    color: #256746;
+    border-color: #d6ecdf;
 }
 
-.badge {
-    display: inline-block;
-    border-radius: 14px;
-    padding: 4px 9px;
-    font-size: 12px;
-    background: #e9eef5;
-}
-
-.priority-high {
-    background: #fee4e2;
-    color: #b42318;
-}
-
-.priority-medium {
-    background: #fff0c2;
-    color: #805b00;
-}
-
-.priority-low {
-    background: #d1fadf;
-    color: #067647;
-}
-
-.status-new {
-    background: #e9eef5;
-}
-
-.status-contacted {
-    background: #dbeafe;
-}
-
-.status-interested {
-    background: #fef0c7;
-}
-
-.status-site_visit_scheduled {
-    background: #e9d7fe;
-}
-
-.status-negotiation {
-    background: #fce7d4;
-}
-
-.status-converted {
-    background: #d1fadf;
-}
-
-.status-lost {
-    background: #fee4e2;
+.notice.error {
+    background: #fff0ef;
+    color: #a83d3d;
+    border-color: #f2d6d3;
 }
 
 .workload-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+    gap: 14px;
 }
 
 .work-card {
-    border: 1px solid #e3e7ed;
-    border-radius: 7px;
-    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 17px;
+    background: #fcfdff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.work-card:hover {
+    border-color: #cbd8e6;
+    box-shadow: 0 4px 12px rgba(30, 48, 70, 0.05);
 }
 
 .work-card h3 {
-    margin: 0 0 9px;
+    margin: 0 0 11px;
+    font-size: 15px;
+    color: #344c67;
+}
+
+.work-card p {
+    color: #68788b;
+    font-size: 12px;
+    line-height: 1.8;
+    margin: 8px 0;
+}
+
+.work-card strong {
+    color: #33465c;
 }
 
 .muted {
-    color: #667085;
+    color: var(--muted);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #edf1f5;
+    color: #586779;
+    white-space: nowrap;
+}
+
+.priority-high {
+    background: #fff0ef;
+    color: #b44747;
+}
+
+.priority-medium {
+    background: #fff6e5;
+    color: #93651f;
+}
+
+.priority-low {
+    background: #eaf6ef;
+    color: #28764d;
+}
+
+.status-new {
+    background: #eef2f7;
+    color: #596c82;
+}
+
+.status-contacted {
+    background: #eaf2fb;
+    color: #356b9e;
+}
+
+.status-interested {
+    background: #fff5df;
+    color: #93651f;
+}
+
+.status-site_visit_scheduled {
+    background: #f2ecfb;
+    color: #7652a2;
+}
+
+.status-negotiation {
+    background: #fff0e4;
+    color: #a36531;
+}
+
+.status-converted {
+    background: #eaf6ef;
+    color: #28764d;
+}
+
+.status-lost {
+    background: #fff0ef;
+    color: #b44747;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    min-width: 1050px;
+    background: #fff;
+}
+
+th,
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0f4;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: #f5f7fa;
+    color: #56677b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+    white-space: nowrap;
+}
+
+td {
+    font-size: 12px;
+    color: #4d5d70;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background: #fafbfd;
+}
+
+td strong {
+    color: #34485f;
+    font-size: 13px;
+}
+
+td select {
+    min-width: 115px;
+    padding: 8px 9px;
+    margin: 0;
+    font-size: 12px;
+    border-radius: 6px;
 }
 
 .inline-form {
     margin: 0;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-}
-
-.notice {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-}
-
-.notice.success {
-    background: #d1fadf;
-    color: #05603a;
-}
-
-.notice.error {
-    background: #fee4e2;
-    color: #b42318;
-}
-
-.small {
-    font-size: 12px;
-}
-
-.empty {
-    padding: 20px;
-    text-align: center;
-    color: #667085;
-}
-
 .priority-form select {
     min-width: 95px;
+    font-weight: 600;
 }
 
 .lead-actions {
@@ -989,27 +1154,154 @@ td {
 }
 
 .lead-actions a {
-    padding: 6px 8px;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 9px;
+    border-radius: 6px;
     text-decoration: none;
     color: #fff;
-    background: #1f5e9c;
+    background: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.lead-actions a:hover {
+    background: var(--primary-dark);
 }
 
 .lead-actions a.edit {
-    background: #667085;
+    background: #68788b;
+}
+
+.lead-actions a.edit:hover {
+    background: #526174;
 }
 
 .lead-actions a.delete,
 .lead-actions .delete-button {
-    background: #b42318;
+    background: #bd5555;
     color: #fff;
     border: none;
-    padding: 6px 8px;
-    border-radius: 4px;
+    padding: 7px 9px;
+    border-radius: 6px;
     text-decoration: none;
     cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.lead-actions a.delete:hover,
+.lead-actions .delete-button:hover {
+    background: #a44040;
+}
+
+.empty {
+    padding: 35px 20px;
+    text-align: center;
+    color: #8491a1;
     font-size: 13px;
+}
+
+.small {
+    font-size: 12px;
+}
+
+.table-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 27px;
+    height: 25px;
+    padding: 0 8px;
+    border-radius: 20px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+.export-form {
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+
+    body {
+        padding: 20px;
+    }
+
+    .panel {
+        padding: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 13px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    .top-links {
+        gap: 7px;
+    }
+
+    .top-links a,
+    .btn {
+        padding: 9px 11px;
+        font-size: 12px;
+    }
+
+    .panel {
+        padding: 15px;
+        border-radius: 9px;
+    }
+
+    .panel h2 {
+        font-size: 16px;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workload-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        width: 100%;
+    }
+
+    .actions .btn {
+        flex: 1;
+    }
+
+    .panel-heading {
+        align-items: flex-start;
+    }
+
+    .export-form,
+    .export-form button {
+        width: 100%;
+    }
 }
 
 </style>
@@ -1019,6 +1311,17 @@ td {
 <body>
 
 <main>
+
+<div class="page-header">
+
+    <div>
+        <h1>Manage Leads</h1>
+        <p class="page-subtitle">
+            Manage customer enquiries, sales assignments and CRM activities.
+        </p>
+    </div>
+
+</div>
 
 <div class="top-links">
 
@@ -1034,8 +1337,6 @@ td {
     <?php endif; ?>
 
 </div>
-
-<h1>Manage Leads</h1>
 
 <?php if ($message !== ""): ?>
 
@@ -1435,13 +1736,16 @@ td {
 
 <section class="panel">
 
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+<div class="panel-heading">
 
-    <h2>Lead List (<?php echo count($leads); ?>)</h2>
+    <h2>
+        Lead List
+        <span class="table-count"><?php echo count($leads); ?></span>
+    </h2>
 
     <!-- CSV Export -->
 
-    <form method="get" action="export_leads.php">
+    <form method="get" action="export_leads.php" class="export-form">
 
         <input type="hidden" name="search" value="<?php echo h($search); ?>">
 

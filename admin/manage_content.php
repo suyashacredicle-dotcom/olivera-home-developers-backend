@@ -162,11 +162,19 @@ $totalContents = count($contents);
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         .content-page {
+            width: 100%;
             max-width: 1450px;
             margin: 0 auto;
-            padding: 10px 5px 35px;
+            padding: 12px 8px 40px;
+            color: #1e293b;
         }
+
+        /* PAGE HEADER */
 
         .content-header {
             display: flex;
@@ -175,106 +183,173 @@ $totalContents = count($contents);
             flex-wrap: wrap;
             gap: 18px;
             margin-bottom: 25px;
+            padding: 26px 28px;
+            background: linear-gradient(120deg, #ffffff, #f1f6ff);
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
         }
 
         .content-header h1 {
             color: #172554;
-            font-size: 28px;
-            margin: 0 0 8px;
+            font-size: 27px;
+            font-weight: 750;
+            letter-spacing: -0.5px;
+            margin: 0 0 7px;
         }
 
         .content-header p {
             color: #64748b;
-            font-size: 14px;
+            font-size: 13px;
             margin: 0;
+            line-height: 1.6;
         }
+
+        .content-header-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: #e8efff;
+            color: #2454b8;
+            border-radius: 12px;
+            font-size: 23px;
+        }
+
+        .content-heading {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* SUMMARY */
 
         .content-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
+            gap: 17px;
+            margin-bottom: 24px;
         }
 
         .content-summary-card {
+            position: relative;
             background: #ffffff;
-            padding: 22px;
+            padding: 22px 23px;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            border-radius: 13px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.035);
+            overflow: hidden;
+        }
+
+        .content-summary-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #4776d0;
         }
 
         .content-summary-label {
             color: #64748b;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 650;
             margin-bottom: 10px;
         }
 
         .content-summary-number {
             color: #172554;
-            font-size: 30px;
-            font-weight: 700;
+            font-size: 31px;
+            font-weight: 750;
+            line-height: 1.2;
         }
+
+        /* PANELS */
 
         .content-panel {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            border-radius: 14px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.035);
             overflow: hidden;
         }
 
         .content-panel-header {
-            padding: 21px 24px;
-            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 21px 25px;
+            background: #fbfcfe;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .content-panel-icon {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #2454b8;
+            background: #eaf0ff;
+            border-radius: 10px;
+            font-size: 18px;
         }
 
         .content-panel-header h2 {
             color: #172554;
-            font-size: 19px;
-            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 750;
+            margin: 0 0 5px;
         }
 
         .content-panel-header p {
-            color: #64748b;
-            font-size: 13px;
+            color: #8290a3;
+            font-size: 12px;
             margin: 0;
+            line-height: 1.5;
         }
 
         .content-panel-body {
-            padding: 24px;
+            padding: 25px;
         }
 
+        /* ALERTS */
+
         .content-alert {
-            padding: 14px 18px;
+            padding: 15px 18px;
             margin-bottom: 22px;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 650;
         }
 
         .content-alert.success {
-            background: #dcfce7;
+            background: #ecfdf3;
             color: #166534;
-            border: 1px solid #86efac;
+            border: 1px solid #bbf7d0;
         }
 
         .content-alert.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+            background: #fff1f2;
+            color: #9f1239;
+            border: 1px solid #fecdd3;
         }
+
+        /* FORM */
 
         .content-form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 3px 23px;
         }
 
         .content-form-group {
-            margin-bottom: 19px;
+            min-width: 0;
+            margin-bottom: 20px;
         }
 
         .content-form-group.full-width {
@@ -292,48 +367,79 @@ $totalContents = count($contents);
         .content-form-group input,
         .content-form-group select,
         .content-form-group textarea {
+            display: block;
             width: 100%;
-            box-sizing: border-box;
             padding: 12px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 14px;
+            border: 1px solid #d8e0eb;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 13px;
             color: #334155;
             background: #ffffff;
             outline: none;
-            transition: 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .content-form-group input,
+        .content-form-group select {
+            min-height: 44px;
         }
 
         .content-form-group textarea {
-            min-height: 150px;
+            min-height: 170px;
             resize: vertical;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .content-form-group input:focus,
         .content-form-group select:focus,
         .content-form-group textarea:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+            border-color: #4776d0;
+            box-shadow: 0 0 0 3px rgba(59, 111, 205, 0.10);
         }
+
+        .content-form-group input::placeholder,
+        .content-form-group textarea::placeholder {
+            color: #a0acbc;
+        }
+
+        .content-form-help {
+            display: block;
+            color: #8794a7;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        /* BUTTONS */
 
         .content-primary-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             padding: 12px 21px;
-            background: #1e40af;
+            background: #2454b8;
             color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border: 1px solid #2454b8;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.2s ease;
         }
 
         .content-primary-btn:hover {
-            background: #1e3a8a;
+            background: #1d4295;
+            border-color: #1d4295;
+            box-shadow: 0 4px 12px rgba(36, 84, 184, 0.18);
+            transform: translateY(-1px);
+        }
+
+        /* SEARCH */
+
+        .content-search-area {
+            padding: 20px 25px;
+            border-bottom: 1px solid #edf0f5;
         }
 
         .content-search-form {
@@ -345,44 +451,61 @@ $totalContents = count($contents);
 
         .content-search-form input {
             flex: 1;
-            min-width: 200px;
+            min-width: 220px;
+            min-height: 43px;
             padding: 11px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 14px;
+            border: 1px solid #d8e0eb;
+            border-radius: 9px;
+            font-size: 13px;
+            color: #334155;
+            outline: none;
+            transition: 0.2s;
         }
 
         .content-search-form input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+            border-color: #4776d0;
+            box-shadow: 0 0 0 3px rgba(59, 111, 205, 0.10);
         }
 
         .content-search-btn {
-            padding: 11px 18px;
-            background: #1e40af;
+            min-height: 43px;
+            padding: 10px 19px;
+            background: #2454b8;
             color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border: 1px solid #2454b8;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .content-search-btn:hover {
+            background: #1d4295;
         }
 
         .content-clear-btn {
             display: inline-flex;
             align-items: center;
-            padding: 11px 16px;
+            justify-content: center;
+            min-height: 43px;
+            padding: 10px 16px;
             background: #f1f5f9;
             color: #475569;
+            border: 1px solid #e2e8f0;
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 650;
+            transition: 0.2s;
         }
 
         .content-clear-btn:hover {
-            background: #e2e8f0;
+            background: #e8edf4;
+            color: #1e293b;
         }
+
+        /* TABLE */
 
         .content-table-wrapper {
             width: 100%;
@@ -396,26 +519,31 @@ $totalContents = count($contents);
         }
 
         .content-table th {
-            background: #f8fafc;
-            color: #475569;
-            font-size: 12px;
+            background: #f8faff;
+            color: #64748b;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.55px;
             text-align: left;
-            padding: 15px 18px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 19px;
+            border-bottom: 1px solid #e7ecf3;
+            white-space: nowrap;
         }
 
         .content-table td {
-            padding: 16px 18px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
+            padding: 16px 19px;
+            border-bottom: 1px solid #f0f2f6;
+            color: #475569;
             font-size: 13px;
             vertical-align: middle;
         }
 
+        .content-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
         .content-table tbody tr:hover {
-            background: #f8fafc;
+            background: #f8faff;
         }
 
         .content-table tbody tr:last-child td {
@@ -423,39 +551,46 @@ $totalContents = count($contents);
         }
 
         .content-id {
-            color: #64748b;
+            color: #8290a3 !important;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .content-title {
-            color: #172554;
-            font-weight: 600;
+            color: #172554 !important;
+            font-weight: 650;
+            max-width: 320px;
         }
 
         .content-status {
-            display: inline-block;
-            padding: 5px 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 11px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 750;
             text-transform: capitalize;
+            white-space: nowrap;
         }
 
         .content-status.published {
-            background: #dcfce7;
-            color: #166534;
+            background: #ecfdf3;
+            color: #167044;
         }
 
         .content-status.draft {
-            background: #fef3c7;
-            color: #92400e;
+            background: #fff7e6;
+            color: #a16207;
         }
 
         .content-date {
-            color: #64748b;
-            font-size: 12px;
+            color: #8290a3 !important;
+            font-size: 12px !important;
             white-space: nowrap;
         }
+
+        /* ACTIONS */
 
         .content-actions {
             display: flex;
@@ -464,22 +599,29 @@ $totalContents = count($contents);
             flex-wrap: wrap;
         }
 
+        .content-actions form {
+            margin: 0;
+        }
+
         .content-edit-btn,
         .content-delete-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            min-height: 31px;
             padding: 7px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
             text-decoration: none;
             cursor: pointer;
+            transition: 0.2s;
         }
 
         .content-edit-btn {
             background: #eff6ff;
             color: #1d4ed8;
+            border: 1px solid #dbeafe;
         }
 
         .content-edit-btn:hover {
@@ -487,29 +629,42 @@ $totalContents = count($contents);
         }
 
         .content-delete-btn {
-            background: #fee2e2;
-            color: #b91c1c;
-            border: none;
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #ffe4e6;
         }
 
         .content-delete-btn:hover {
-            background: #fecaca;
+            background: #ffe4e6;
         }
+
+        /* EMPTY STATE */
 
         .content-empty {
             text-align: center;
-            padding: 45px 20px !important;
-            color: #64748b !important;
+            padding: 48px 20px !important;
+            color: #8290a3 !important;
+            line-height: 1.7;
         }
 
         .content-empty strong {
             display: block;
             color: #334155;
-            font-size: 16px;
-            margin-bottom: 7px;
+            font-size: 15px;
+            margin-bottom: 6px;
         }
 
-        @media (max-width: 650px) {
+        /* RESPONSIVE */
+
+        @media (max-width: 760px) {
+
+            .content-page {
+                padding: 8px 2px 25px;
+            }
+
+            .content-header {
+                padding: 20px;
+            }
 
             .content-header h1 {
                 font-size: 23px;
@@ -517,6 +672,7 @@ $totalContents = count($contents);
 
             .content-form-grid {
                 grid-template-columns: 1fr;
+                gap: 0;
             }
 
             .content-form-group.full-width {
@@ -524,8 +680,46 @@ $totalContents = count($contents);
             }
 
             .content-panel-body {
+                padding: 19px;
+            }
+
+            .content-panel-header {
                 padding: 18px;
             }
+
+            .content-search-area {
+                padding: 17px;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
+            .content-heading {
+                gap: 10px;
+            }
+
+            .content-header-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 19px;
+            }
+
+            .content-search-form {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .content-search-form input,
+            .content-search-btn,
+            .content-clear-btn {
+                width: 100%;
+            }
+
+            .content-primary-btn {
+                width: 100%;
+            }
+
         }
 
     </style>
@@ -584,19 +778,29 @@ $totalContents = count($contents);
 
         <div class="content-page">
 
+            <!-- PAGE HEADER -->
+
             <div class="content-header">
 
-                <div>
+                <div class="content-heading">
 
-                    <h1>Manage Content</h1>
+                    <div class="content-header-icon">▤</div>
 
-                    <p>
-                        Create, manage, edit and publish your website content.
-                    </p>
+                    <div>
+
+                        <h1>Manage Content</h1>
+
+                        <p>
+                            Create, manage, edit and publish your website content.
+                        </p>
+
+                    </div>
 
                 </div>
 
             </div>
+
+            <!-- SUCCESS / ERROR MESSAGE -->
 
             <?php if ($message !== ""): ?>
 
@@ -611,6 +815,8 @@ $totalContents = count($contents);
                 </div>
 
             <?php endif; ?>
+
+            <!-- CONTENT SUMMARY -->
 
             <div class="content-summary">
 
@@ -628,15 +834,23 @@ $totalContents = count($contents);
 
             </div>
 
+            <!-- CREATE CONTENT -->
+
             <section class="content-panel">
 
                 <div class="content-panel-header">
 
-                    <h2>Create New Content</h2>
+                    <div class="content-panel-icon">＋</div>
 
-                    <p>
-                        Add a new content entry to your website.
-                    </p>
+                    <div>
+
+                        <h2>Create New Content</h2>
+
+                        <p>
+                            Add a new content entry to your website.
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -682,6 +896,10 @@ $totalContents = count($contents);
                                     required
                                 ></textarea>
 
+                                <span class="content-form-help">
+                                    Enter the content you want to add to your website.
+                                </span>
+
                             </div>
 
                             <div class="content-form-group">
@@ -715,19 +933,29 @@ $totalContents = count($contents);
 
             </section>
 
+            <!-- EXISTING CONTENT -->
+
             <section class="content-panel">
 
                 <div class="content-panel-header">
 
-                    <h2>Existing Content</h2>
+                    <div class="content-panel-icon">▦</div>
 
-                    <p>
-                        View and manage your existing website content.
-                    </p>
+                    <div>
+
+                        <h2>Existing Content</h2>
+
+                        <p>
+                            View and manage your existing website content.
+                        </p>
+
+                    </div>
 
                 </div>
 
-                <div class="content-panel-body">
+                <!-- SEARCH -->
+
+                <div class="content-search-area">
 
                     <form method="GET" class="content-search-form">
 
@@ -755,6 +983,8 @@ $totalContents = count($contents);
                     </form>
 
                 </div>
+
+                <!-- CONTENT TABLE -->
 
                 <div class="content-table-wrapper">
 

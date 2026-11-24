@@ -16,7 +16,7 @@ requirePermission("manage_admins");
 
 function galleryEscape($value)
 {
-    return htmlspecialchars((string) $value, ENT_QUOTES, "UTF-8");
+    return htmlspecialchars((string)$value, ENT_QUOTES, "UTF-8");
 }
 
 // --------------------------------------------------
@@ -58,7 +58,11 @@ if (!is_string($search)) {
     $search = "";
 }
 
-$search = trim($search);
+$search = trim(substr($search, 0, 200));
+
+// --------------------------------------------------
+// FETCH GALLERY PHOTOS
+// --------------------------------------------------
 
 try {
 
@@ -131,114 +135,181 @@ try {
 
     <style>
 
-        .gallery-page {
-            max-width: 1450px;
-            margin: 0 auto;
-            padding: 10px 5px 35px;
+        * {
+            box-sizing: border-box;
         }
 
+        body {
+            background: #f5f7fb;
+            color: #263449;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .gallery-page {
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 12px 5px 35px;
+        }
+
+        /* PAGE HEADER */
+
         .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
             margin-bottom: 25px;
+            padding: 23px 25px;
+            background: linear-gradient(120deg, #ffffff, #f0f5ff);
+            border: 1px solid #e3e9f2;
+            border-radius: 13px;
         }
 
         .gallery-header h1 {
-            color: #172554;
-            font-size: 28px;
-            margin: 0 0 8px;
+            color: #17243a;
+            font-size: 25px;
+            font-weight: 700;
+            margin: 0 0 7px;
         }
 
         .gallery-header p {
-            color: #64748b;
-            font-size: 14px;
+            color: #718096;
+            font-size: 13px;
             margin: 0;
+            line-height: 1.6;
         }
+
+        .gallery-header-tag {
+            padding: 9px 13px;
+            background: #edf3ff;
+            border: 1px solid #dce7fb;
+            border-radius: 8px;
+            color: #315fbd;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* SUMMARY CARDS */
 
         .gallery-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 24px;
         }
 
         .gallery-summary-card {
+            position: relative;
+            overflow: hidden;
+            padding: 21px 22px;
             background: #ffffff;
-            padding: 22px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #e3e9f2;
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            box-shadow: 0 3px 12px rgba(26, 45, 75, 0.035);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gallery-summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 17px rgba(26, 45, 75, 0.07);
         }
 
         .gallery-summary-label {
-            color: #64748b;
+            color: #718096;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 11px;
         }
 
         .gallery-summary-number {
-            color: #172554;
-            font-size: 30px;
+            color: #17243a;
+            font-size: 29px;
             font-weight: 700;
         }
 
+        .gallery-summary-card.total {
+            border-top: 3px solid #315fbd;
+        }
+
+        .gallery-summary-card.public {
+            border-top: 3px solid #26966a;
+        }
+
+        .gallery-summary-card.employees {
+            border-top: 3px solid #6684c5;
+        }
+
+        /* PANELS */
+
         .gallery-panel {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            border: 1px solid #e3e9f2;
+            border-radius: 13px;
+            margin-bottom: 24px;
+            box-shadow: 0 3px 12px rgba(26, 45, 75, 0.035);
             overflow: hidden;
         }
 
         .gallery-panel-header {
             padding: 21px 24px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e8edf4;
+            background: #ffffff;
         }
 
         .gallery-panel-header h2 {
-            color: #172554;
-            font-size: 19px;
+            color: #17243a;
+            font-size: 17px;
+            font-weight: 700;
             margin: 0 0 6px;
         }
 
         .gallery-panel-header p {
-            color: #64748b;
-            font-size: 13px;
+            color: #718096;
+            font-size: 12px;
             margin: 0;
+            line-height: 1.6;
         }
 
         .gallery-panel-body {
             padding: 24px;
         }
 
+        /* ALERTS */
+
         .gallery-alert {
-            padding: 14px 18px;
-            margin-bottom: 22px;
+            padding: 14px 17px;
+            margin-bottom: 21px;
             border-radius: 9px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .gallery-alert.success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
+            background: #eaf7ef;
+            color: #187347;
+            border: 1px solid #c8e9d5;
         }
 
         .gallery-alert.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+            background: #fff0f0;
+            color: #a83232;
+            border: 1px solid #f1cccc;
         }
+
+        /* UPLOAD FORM */
 
         .gallery-form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 21px;
+            row-gap: 2px;
         }
 
         .gallery-form-group {
             margin-bottom: 19px;
+            min-width: 0;
         }
 
         .gallery-form-group.full-width {
@@ -247,8 +318,8 @@ try {
 
         .gallery-form-group label {
             display: block;
-            color: #334155;
-            font-size: 13px;
+            color: #34445c;
+            font-size: 12px;
             font-weight: 700;
             margin-bottom: 8px;
         }
@@ -257,18 +328,19 @@ try {
         .gallery-form-group select,
         .gallery-form-group textarea {
             width: 100%;
-            box-sizing: border-box;
-            padding: 12px 14px;
-            border: 1px solid #cbd5e1;
+            min-height: 43px;
+            padding: 11px 13px;
+            border: 1px solid #dce3ed;
             border-radius: 8px;
-            font-size: 14px;
-            color: #334155;
-            background: #ffffff;
+            font-size: 13px;
+            color: #34445c;
+            background: #fbfcfe;
             outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .gallery-form-group textarea {
-            min-height: 110px;
+            min-height: 105px;
             resize: vertical;
             line-height: 1.6;
         }
@@ -276,35 +348,41 @@ try {
         .gallery-form-group input:focus,
         .gallery-form-group select:focus,
         .gallery-form-group textarea:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+            border-color: #315fbd;
+            box-shadow: 0 0 0 3px rgba(49, 95, 189, 0.09);
+            background: #ffffff;
         }
 
         .gallery-form-help {
             display: block;
-            color: #64748b;
-            font-size: 12px;
+            color: #8995a7;
+            font-size: 11px;
             margin-top: 7px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .gallery-primary-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 21px;
-            background: #1e40af;
+            min-height: 42px;
+            padding: 0 21px;
+            background: #315fbd;
             color: #ffffff;
             border: none;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
         }
 
         .gallery-primary-btn:hover {
-            background: #1e3a8a;
+            background: #244b9b;
+            transform: translateY(-1px);
         }
+
+        /* SEARCH */
 
         .gallery-search-form {
             display: flex;
@@ -316,32 +394,52 @@ try {
         .gallery-search-form input {
             flex: 1;
             min-width: 200px;
-            padding: 11px 14px;
-            border: 1px solid #cbd5e1;
+            min-height: 42px;
+            padding: 10px 13px;
+            border: 1px solid #dce3ed;
             border-radius: 8px;
-            font-size: 14px;
+            background: #fbfcfe;
+            color: #34445c;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .gallery-search-form input:focus {
+            border-color: #315fbd;
+            box-shadow: 0 0 0 3px rgba(49, 95, 189, 0.09);
+        }
+
+        .gallery-search-btn,
+        .gallery-clear-btn {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 17px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
         }
 
         .gallery-search-btn {
-            padding: 11px 18px;
-            background: #1e40af;
+            background: #315fbd;
             color: #ffffff;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
+        }
+
+        .gallery-search-btn:hover {
+            background: #244b9b;
         }
 
         .gallery-clear-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 11px 16px;
-            background: #f1f5f9;
-            color: #475569;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
+            background: #eef1f6;
+            color: #526176;
+        }
+
+        .gallery-clear-btn:hover {
+            background: #e2e7ef;
         }
 
         /* TABLE */
@@ -353,126 +451,145 @@ try {
 
         .gallery-table {
             width: 100%;
-            min-width: 750px;
-            border-collapse: collapse;
+            min-width: 780px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
         .gallery-table th {
-            background: #f8fafc;
-            color: #475569;
-            font-size: 12px;
+            background: #f6f8fc;
+            color: #536176;
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.45px;
             text-align: left;
-            padding: 16px 18px;
-            border-bottom: 1px solid #e2e8f0;
+            font-weight: 700;
+            padding: 15px 17px;
+            border-bottom: 1px solid #e5eaf1;
+            white-space: nowrap;
         }
 
         .gallery-table td {
-            padding: 17px 18px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-            font-size: 13px;
+            padding: 15px 17px;
+            border-bottom: 1px solid #edf0f5;
+            color: #526176;
+            font-size: 12px;
             vertical-align: middle;
         }
 
-        .gallery-table tbody tr:hover {
-            background: #f8fafc;
+        .gallery-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .gallery-table tbody tr:hover td {
+            background: #fafcff;
         }
 
         .gallery-serial {
-            color: #64748b;
+            color: #8995a7 !important;
             font-weight: 700;
-            width: 85px;
+            width: 80px;
         }
 
         .gallery-photo-name {
-            color: #172554;
+            color: #26364d !important;
             font-weight: 700;
+            overflow-wrap: anywhere;
+            min-width: 180px;
         }
 
+        /* VISIBILITY */
+
         .gallery-visibility {
-            display: inline-block;
-            padding: 6px 11px;
-            border-radius: 20px;
-            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 7px;
+            font-size: 10px;
             font-weight: 700;
             white-space: nowrap;
         }
 
         .gallery-visibility.public {
-            background: #dcfce7;
-            color: #166534;
+            background: #e8f6ed;
+            color: #23764c;
         }
 
         .gallery-visibility.employees {
-            background: #dbeafe;
-            color: #1e40af;
+            background: #edf3ff;
+            color: #315fbd;
         }
 
         .gallery-date {
-            color: #64748b;
-            font-size: 12px;
+            color: #718096 !important;
+            font-size: 11px !important;
             white-space: nowrap;
         }
+
+        /* ACTION BUTTONS */
 
         .gallery-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 7px;
             align-items: center;
         }
 
         .gallery-view-btn {
-            width: 35px;
-            height: 35px;
+            width: 34px;
+            height: 34px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: #e0f2fe;
-            color: #0369a1;
+            background: #edf3ff;
+            color: #315fbd;
+            border: 1px solid #dce7fb;
             border-radius: 7px;
             text-decoration: none;
-            transition: 0.2s;
+            transition: background 0.2s;
         }
 
         .gallery-view-btn:hover {
-            background: #bae6fd;
+            background: #dce8ff;
         }
 
         .gallery-view-btn svg {
-            width: 19px;
-            height: 19px;
+            width: 17px;
+            height: 17px;
         }
 
         .gallery-edit-btn,
         .gallery-delete-btn {
-            display: inline-block;
-            padding: 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            padding: 0 11px;
             border-radius: 7px;
             text-decoration: none;
             border: none;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
         .gallery-edit-btn {
-            background: #dbeafe;
-            color: #1e40af;
+            background: #edf3ff;
+            color: #315fbd;
         }
 
         .gallery-edit-btn:hover {
-            background: #bfdbfe;
+            background: #dce8ff;
         }
 
         .gallery-delete-btn {
-            background: #fee2e2;
-            color: #991b1b;
+            background: #fff0f0;
+            color: #a83232;
         }
 
         .gallery-delete-btn:hover {
-            background: #fecaca;
+            background: #ffe0e0;
         }
 
         .gallery-delete-form {
@@ -480,34 +597,85 @@ try {
             margin: 0;
         }
 
+        /* INFORMATION NOTICE */
+
+        .gallery-notice {
+            padding: 13px 15px;
+            background: #f0f5ff;
+            color: #41629c;
+            border: 1px solid #dce7fb;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        /* EMPTY STATE */
+
         .gallery-empty {
             text-align: center;
             padding: 45px 20px !important;
-            color: #64748b !important;
+            color: #8995a7 !important;
         }
 
         .gallery-empty strong {
             display: block;
-            color: #334155;
-            font-size: 16px;
+            color: #34445c;
+            font-size: 14px;
             margin-bottom: 7px;
         }
 
-        .gallery-notice {
-            padding: 13px 16px;
-            background: #eff6ff;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 20px;
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .gallery-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
         }
 
         @media (max-width: 650px) {
 
+            .gallery-page {
+                padding: 8px 0 25px;
+            }
+
+            .gallery-header {
+                align-items: flex-start;
+                padding: 18px;
+            }
+
             .gallery-header h1 {
-                font-size: 23px;
+                font-size: 21px;
+            }
+
+            .gallery-header-tag {
+                display: none;
+            }
+
+            .gallery-summary {
+                gap: 10px;
+            }
+
+            .gallery-summary-card {
+                padding: 16px;
+            }
+
+            .gallery-summary-number {
+                font-size: 25px;
+            }
+
+            .gallery-summary-label {
+                font-size: 11px;
+            }
+
+            .gallery-panel-header {
+                padding: 17px;
+            }
+
+            .gallery-panel-body {
+                padding: 17px;
             }
 
             .gallery-form-grid {
@@ -518,9 +686,28 @@ try {
                 grid-column: auto;
             }
 
-            .gallery-panel-body {
-                padding: 18px;
+            .gallery-search-form input {
+                flex-basis: 100%;
+                min-width: 100%;
             }
+
+            .gallery-search-btn,
+            .gallery-clear-btn {
+                flex: 1;
+            }
+
+            .gallery-primary-btn {
+                width: 100%;
+            }
+
+        }
+
+        @media (max-width: 380px) {
+
+            .gallery-summary {
+                grid-template-columns: 1fr;
+            }
+
         }
 
     </style>
@@ -572,13 +759,21 @@ try {
 
         <div class="gallery-page">
 
+            <!-- PAGE HEADER -->
+
             <div class="gallery-header">
 
-                <h1>Gallery Management</h1>
+                <div>
+                    <h1>Gallery Management</h1>
 
-                <p>
-                    Upload photos and control who can view them.
-                </p>
+                    <p>
+                        Manage property photos and control their visibility across your website and employee panel.
+                    </p>
+                </div>
+
+                <div class="gallery-header-tag">
+                    SUPER ADMIN
+                </div>
 
             </div>
 
@@ -600,25 +795,40 @@ try {
 
             <div class="gallery-summary">
 
-                <div class="gallery-summary-card">
-                    <div class="gallery-summary-label">Matching Photos</div>
+                <div class="gallery-summary-card total">
+
+                    <div class="gallery-summary-label">
+                        Matching Photos
+                    </div>
+
                     <div class="gallery-summary-number">
                         <?php echo $totalPhotos; ?>
                     </div>
+
                 </div>
 
-                <div class="gallery-summary-card">
-                    <div class="gallery-summary-label">Public Website Photos</div>
+                <div class="gallery-summary-card public">
+
+                    <div class="gallery-summary-label">
+                        Public Website Photos
+                    </div>
+
                     <div class="gallery-summary-number">
                         <?php echo $publicPhotos; ?>
                     </div>
+
                 </div>
 
-                <div class="gallery-summary-card">
-                    <div class="gallery-summary-label">Employees Only Photos</div>
+                <div class="gallery-summary-card employees">
+
+                    <div class="gallery-summary-label">
+                        Employees Only Photos
+                    </div>
+
                     <div class="gallery-summary-number">
                         <?php echo $employeePhotos; ?>
                     </div>
+
                 </div>
 
             </div>
@@ -632,7 +842,7 @@ try {
                     <h2>Upload New Photo</h2>
 
                     <p>
-                        Select a photo and choose who should be able to view it.
+                        Add a photo to your gallery and select its visibility.
                     </p>
 
                 </div>
@@ -666,15 +876,16 @@ try {
                                 >
 
                                 <span class="gallery-form-help">
-                                    Allowed formats: JPG, JPEG, PNG and WEBP.
-                                    Maximum file size: 5 MB.
+                                    Allowed formats: JPG, JPEG, PNG and WEBP. Maximum file size: 5 MB.
                                 </span>
 
                             </div>
 
                             <div class="gallery-form-group">
 
-                                <label for="title">Photo Name (Optional)</label>
+                                <label for="title">
+                                    Photo Name (Optional)
+                                </label>
 
                                 <input
                                     type="text"
@@ -741,7 +952,7 @@ try {
 
             </section>
 
-            <!-- UPLOADED PHOTOS TABLE -->
+            <!-- UPLOADED PHOTOS -->
 
             <section class="gallery-panel">
 
@@ -750,7 +961,7 @@ try {
                     <h2>Uploaded Photos</h2>
 
                     <p>
-                        View photo names and manage your uploaded photos.
+                        Search, preview, edit and delete gallery photos.
                     </p>
 
                 </div>
@@ -758,9 +969,7 @@ try {
                 <div class="gallery-panel-body">
 
                     <div class="gallery-notice">
-                        Photos are not displayed directly in this table.
-                        Use the eye icon to open a photo separately.
-                        Only Super Admin can use these previews.
+                        Use the eye icon to preview a photo. Public Website photos are intended for public display, while Employees Only photos are restricted to authorized admin-panel users.
                     </div>
 
                     <!-- SEARCH -->
@@ -807,23 +1016,21 @@ try {
 
                         <tbody>
 
-                            <?php if ($totalPhotos > 0): ?>
+                            <?php if (!empty($photos)): ?>
 
-                                <?php
-                                $serialNumber = 1;
-                                ?>
+                                <?php $serialNumber = 1; ?>
 
                                 <?php foreach ($photos as $photo): ?>
 
                                     <?php
 
                                     $displayPhotoName = trim(
-                                        (string) ($photo["title"] ?? "")
+                                        (string)($photo["title"] ?? "")
                                     );
 
                                     if ($displayPhotoName === "") {
                                         $displayPhotoName = trim(
-                                            (string) ($photo["original_filename"] ?? "")
+                                            (string)($photo["original_filename"] ?? "")
                                         );
                                     }
 
@@ -835,19 +1042,13 @@ try {
 
                                     <tr>
 
-                                        <!-- SERIAL NUMBER -->
-
                                         <td class="gallery-serial">
                                             <?php echo $serialNumber++; ?>
                                         </td>
 
-                                        <!-- PHOTO NAME -->
-
                                         <td class="gallery-photo-name">
                                             <?php echo galleryEscape($displayPhotoName); ?>
                                         </td>
-
-                                        <!-- VISIBILITY -->
 
                                         <td>
 
@@ -867,20 +1068,14 @@ try {
 
                                         </td>
 
-                                        <!-- UPLOAD DATE -->
-
                                         <td class="gallery-date">
-                                            <?php
-                                            echo galleryEscape($photo["created_at"]);
-                                            ?>
+                                            <?php echo galleryEscape($photo["created_at"] ?? ""); ?>
                                         </td>
-
-                                        <!-- VIEW PHOTO -->
 
                                         <td>
 
                                             <a
-                                                href="gallery_preview.php?id=<?php echo (int) $photo["id"]; ?>"
+                                                href="gallery_preview.php?id=<?php echo (int)$photo["id"]; ?>"
                                                 class="gallery-view-btn"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
@@ -898,25 +1093,20 @@ try {
                                                     stroke-linejoin="round"
                                                     aria-hidden="true"
                                                 >
-
                                                     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
-
                                                     <circle cx="12" cy="12" r="3"/>
-
                                                 </svg>
 
                                             </a>
 
                                         </td>
 
-                                        <!-- ACTIONS -->
-
                                         <td>
 
                                             <div class="gallery-actions">
 
                                                 <a
-                                                    href="actions/edit_gallery.php?id=<?php echo (int) $photo["id"]; ?>"
+                                                    href="actions/edit_gallery.php?id=<?php echo (int)$photo["id"]; ?>"
                                                     class="gallery-edit-btn"
                                                 >
                                                     Edit
@@ -938,7 +1128,7 @@ try {
                                                     <input
                                                         type="hidden"
                                                         name="id"
-                                                        value="<?php echo (int) $photo["id"]; ?>"
+                                                        value="<?php echo (int)$photo["id"]; ?>"
                                                     >
 
                                                     <button

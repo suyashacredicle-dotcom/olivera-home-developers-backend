@@ -48,7 +48,6 @@ if (
     $_SERVER["REQUEST_METHOD"] === "POST" &&
     isset($_POST["create_user"])
 ) {
-
     $submittedToken = $_POST["csrf_token"] ?? "";
     $sessionToken = $_SESSION["csrf_token"] ?? "";
 
@@ -58,7 +57,6 @@ if (
         $sessionToken === "" ||
         !hash_equals($sessionToken, $submittedToken)
     ) {
-
         $_SESSION["user_message"] =
             "Invalid request. Please reload the page.";
 
@@ -77,14 +75,9 @@ if (
         !is_string($email) ||
         !is_string($password)
     ) {
-
-        $_SESSION["user_message"] =
-            "Invalid user details.";
-
+        $_SESSION["user_message"] = "Invalid user details.";
         $_SESSION["user_message_type"] = "error";
-
     } else {
-
         $name = trim($name);
         $email = strtolower(trim($email));
 
@@ -97,16 +90,12 @@ if (
             strlen($password) < 12 ||
             strlen($password) > 4096
         ) {
-
             $_SESSION["user_message"] =
                 "Enter valid details. Name must not exceed 100 characters, email must be valid, and password must be between 12 and 4096 characters.";
 
             $_SESSION["user_message_type"] = "error";
-
         } else {
-
             try {
-
                 $hashedPassword = password_hash(
                     $password,
                     PASSWORD_DEFAULT
@@ -140,14 +129,10 @@ if (
                     bin2hex(random_bytes(32));
 
             } catch (PDOException $e) {
-
                 if ($e->getCode() === "23000") {
-
                     $_SESSION["user_message"] =
                         "This email address is already registered.";
-
                 } else {
-
                     error_log($e->getMessage());
 
                     $_SESSION["user_message"] =
@@ -157,7 +142,6 @@ if (
                 $_SESSION["user_message_type"] = "error";
 
             } catch (Throwable $e) {
-
                 error_log($e->getMessage());
 
                 $_SESSION["user_message"] =
@@ -189,7 +173,6 @@ if (strlen($search) > 100) {
 }
 
 if ($search !== "") {
-
     $stmt = $pdo->prepare("
         SELECT id, name, email, status, created_at
         FROM users
@@ -203,9 +186,7 @@ if ($search !== "") {
         $searchTerm,
         $searchTerm
     ]);
-
 } else {
-
     $stmt = $pdo->query("
         SELECT id, name, email, status, created_at
         FROM users
@@ -221,7 +202,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -230,14 +210,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../assets/css/admin.css">
 
     <style>
-
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            background: #f4f6fa;
+            background: #f3f6fb;
             font-family: Arial, Helvetica, sans-serif;
             color: #263247;
         }
@@ -253,22 +232,23 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: 250px;
             min-width: 250px;
             background: #17243a;
-            color: #ffffff;
+            color: #fff;
             padding: 25px 16px;
         }
 
         .sidebar-brand {
             font-size: 21px;
-            font-weight: bold;
-            padding: 0 12px 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-            margin-bottom: 22px;
+            font-weight: 700;
+            padding: 0 12px 25px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            margin-bottom: 20px;
+            letter-spacing: .2px;
         }
 
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 6px;
         }
 
         .sidebar-menu a {
@@ -276,28 +256,28 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 12px 14px;
             color: #cbd5e1;
             text-decoration: none;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 14px;
-            transition: 0.2s;
+            transition: background .2s, color .2s;
         }
 
         .sidebar-menu a:hover {
             background: #263954;
-            color: #ffffff;
+            color: #fff;
         }
 
         .sidebar-menu a.active {
             background: #315fbd;
-            color: #ffffff;
-            font-weight: bold;
+            color: #fff;
+            font-weight: 700;
         }
 
         .sidebar-section {
             color: #8292aa;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 700;
             letter-spacing: 1px;
-            padding: 18px 14px 7px;
+            padding: 19px 14px 7px;
             text-transform: uppercase;
         }
 
@@ -306,7 +286,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .main-content {
             flex: 1;
             min-width: 0;
-            padding: 35px;
+            padding: 32px;
         }
 
         .page-header {
@@ -315,13 +295,14 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 28px;
+            margin-bottom: 27px;
         }
 
         .page-header h1 {
             margin: 0 0 7px;
             font-size: 27px;
             color: #1d2b43;
+            font-weight: 700;
         }
 
         .page-header p {
@@ -333,17 +314,25 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .welcome-text {
             color: #718096;
             font-size: 13px;
+            background: #fff;
+            border: 1px solid #e5eaf1;
+            border-radius: 8px;
+            padding: 10px 14px;
         }
 
-        /* CARDS */
+        .welcome-text strong {
+            color: #263247;
+        }
+
+        /* CONTENT CARDS */
 
         .content-card {
-            background: #ffffff;
+            background: #fff;
             border-radius: 12px;
             padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 15px rgba(20, 35, 60, 0.05);
-            border: 1px solid #e8edf4;
+            margin-bottom: 24px;
+            border: 1px solid #e5eaf1;
+            box-shadow: 0 3px 12px rgba(20, 35, 60, .035);
         }
 
         .card-heading {
@@ -362,15 +351,17 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             margin: 0;
             color: #8290a3;
             font-size: 13px;
+            line-height: 1.5;
         }
 
         /* MESSAGES */
 
         .message {
             padding: 13px 16px;
-            border-radius: 7px;
+            border-radius: 8px;
             margin-bottom: 22px;
             font-size: 14px;
+            line-height: 1.5;
         }
 
         .message.success {
@@ -385,10 +376,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border: 1px solid #f3cccc;
         }
 
-        /* FORM FIELDS */
+        /* FORM */
 
         .form-group {
             margin-bottom: 20px;
+            max-width: 650px;
         }
 
         .form-group label {
@@ -403,17 +395,17 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: 100%;
             padding: 12px 14px;
             border: 1px solid #d8e0eb;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 14px;
             color: #263247;
-            background: #ffffff;
+            background: #fff;
             outline: none;
-            transition: 0.2s;
+            transition: border-color .2s, box-shadow .2s;
         }
 
         .form-control:focus {
             border-color: #4776d0;
-            box-shadow: 0 0 0 3px rgba(71,118,208,0.12);
+            box-shadow: 0 0 0 3px rgba(71,118,208,.11);
         }
 
         .password-wrapper {
@@ -435,7 +427,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background: transparent;
             color: #315fbd;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
             padding: 6px;
         }
@@ -456,19 +448,20 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .btn {
             display: inline-block;
             padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
+            border: 1px solid transparent;
+            border-radius: 7px;
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background .2s, border-color .2s, color .2s;
             text-align: center;
+            white-space: nowrap;
         }
 
         .btn-primary {
             background: #315fbd;
-            color: #ffffff;
+            color: #fff;
         }
 
         .btn-primary:hover {
@@ -544,6 +537,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
+            border: 1px solid #edf0f5;
+            border-radius: 9px;
         }
 
         .users-table {
@@ -558,10 +553,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 14px 13px;
             text-align: left;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: .4px;
             border-bottom: 1px solid #e6ebf2;
+            white-space: nowrap;
         }
 
         .users-table td {
@@ -570,6 +566,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #45546a;
             font-size: 13px;
             vertical-align: middle;
+        }
+
+        .users-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .users-table tbody tr:hover {
@@ -593,7 +593,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 6px 10px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 700;
             text-transform: capitalize;
         }
 
@@ -626,6 +626,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #8290a3 !important;
         }
 
+        /* FOOTER */
+
         .account-footer {
             margin-top: 25px;
         }
@@ -644,7 +646,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         /* RESPONSIVE */
 
         @media (max-width: 850px) {
-
             .admin-layout {
                 flex-direction: column;
             }
@@ -675,7 +676,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         @media (max-width: 500px) {
-
             .main-content {
                 padding: 15px;
             }
@@ -704,10 +704,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 width: 100%;
             }
 
+            .welcome-text {
+                width: 100%;
+            }
         }
-
     </style>
-
 </head>
 
 <body>
@@ -787,22 +788,18 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="page-header">
 
             <div>
-
                 <h1>Manage Website Users</h1>
 
                 <p>
                     Create, search and manage registered website users.
                 </p>
-
             </div>
 
             <div class="welcome-text">
-
                 Welcome,
                 <strong>
                     <?php echo e($_SESSION["admin_name"] ?? "Admin"); ?>
                 </strong>
-
             </div>
 
         </div>
@@ -983,7 +980,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <table class="users-table">
 
                     <thead>
-
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
@@ -992,7 +988,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
-
                     </thead>
 
                     <tbody>
@@ -1018,9 +1013,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <td>
 
                                         <span class="status-badge <?php echo $user["status"] === "active" ? "status-active" : "status-inactive"; ?>">
-
                                             <?php echo e($user["status"]); ?>
-
                                         </span>
 
                                     </td>
@@ -1117,13 +1110,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php else: ?>
 
                             <tr>
-
                                 <td colspan="6" class="empty-state">
-
                                     No website users found.
-
                                 </td>
-
                             </tr>
 
                         <?php endif; ?>
@@ -1151,7 +1140,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!-- SHOW / HIDE PASSWORD SCRIPT -->
 
 <script>
-
 document.querySelectorAll(".toggle-password").forEach(function(button) {
 
     button.addEventListener("click", function() {
@@ -1182,7 +1170,6 @@ document.querySelectorAll(".toggle-password").forEach(function(button) {
     });
 
 });
-
 </script>
 
 </body>

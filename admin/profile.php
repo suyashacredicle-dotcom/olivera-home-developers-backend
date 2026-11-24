@@ -41,7 +41,6 @@ if (!$admin) {
     exit;
 }
 
-// Values displayed in the form
 $formName = $admin["name"];
 $formEmail = $admin["email"];
 
@@ -166,6 +165,8 @@ function e($value) {
     );
 }
 
+$avatarInitial = strtoupper(substr(trim($formName), 0, 1));
+
 ?>
 
 <!DOCTYPE html>
@@ -188,7 +189,7 @@ function e($value) {
 
         body {
             margin: 0;
-            background: #f4f6fa;
+            background: #f5f7fb;
             font-family: Arial, Helvetica, sans-serif;
             color: #263247;
         }
@@ -197,6 +198,8 @@ function e($value) {
             display: flex;
             min-height: 100vh;
         }
+
+        /* SIDEBAR */
 
         .sidebar {
             width: 250px;
@@ -225,9 +228,9 @@ function e($value) {
             padding: 12px 14px;
             color: #cbd5e1;
             text-decoration: none;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 14px;
-            transition: 0.2s;
+            transition: background 0.2s, color 0.2s;
         }
 
         .sidebar-menu a:hover {
@@ -250,6 +253,8 @@ function e($value) {
             text-transform: uppercase;
         }
 
+        /* MAIN CONTENT */
+
         .main-content {
             flex: 1;
             min-width: 0;
@@ -262,7 +267,25 @@ function e($value) {
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
-            margin-bottom: 28px;
+            margin-bottom: 27px;
+        }
+
+        .page-title-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #eaf0ff;
+            color: #315fbd;
+            font-size: 23px;
         }
 
         .page-header h1 {
@@ -277,18 +300,26 @@ function e($value) {
             font-size: 14px;
         }
 
+        .breadcrumb {
+            font-size: 12px;
+            color: #8995a7;
+            margin-top: 6px;
+        }
+
+        /* PROFILE CARD */
+
         .profile-card {
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 13px;
             padding: 30px;
-            max-width: 850px;
-            box-shadow: 0 3px 15px rgba(20, 35, 60, 0.05);
-            border: 1px solid #e8edf4;
+            max-width: 900px;
+            border: 1px solid #e7ecf3;
+            box-shadow: 0 4px 18px rgba(20, 35, 60, 0.045);
         }
 
         .card-heading {
             border-bottom: 1px solid #edf0f5;
-            padding-bottom: 18px;
+            padding-bottom: 19px;
             margin-bottom: 25px;
         }
 
@@ -302,68 +333,101 @@ function e($value) {
             margin: 0;
             color: #8290a3;
             font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* PROFILE IDENTITY */
+
+        .profile-identity {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            padding: 19px;
+            margin-bottom: 27px;
+            border: 1px solid #e9eef6;
+            border-radius: 11px;
+            background: #f9fbfe;
         }
 
         .profile-avatar {
             width: 66px;
             height: 66px;
+            min-width: 66px;
             border-radius: 50%;
             background: #e8efff;
             color: #315fbd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 25px;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 22px;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(49,95,189,0.12);
+        }
+
+        .profile-identity h3 {
+            margin: 0 0 6px;
+            color: #25344b;
+            font-size: 17px;
+        }
+
+        .profile-identity p {
+            margin: 0;
+            color: #8290a3;
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        /* FORM */
+
+        .form-section-title {
+            color: #263247;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 21px;
+            min-width: 0;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 9px;
             color: #35445a;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .form-control {
             display: block;
             width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d8e0eb;
-            border-radius: 7px;
+            padding: 13px 14px;
+            border: 1px solid #dce3ed;
+            border-radius: 8px;
             font-size: 14px;
             color: #263247;
             background: #ffffff;
             outline: none;
-            transition: 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-control:focus {
             border-color: #4776d0;
-            box-shadow: 0 0 0 3px rgba(71,118,208,0.12);
-        }
-
-        .form-control:disabled {
-            background: #f1f4f8;
-            color: #78869a;
-            cursor: not-allowed;
-        }
-
-        .form-help {
-            display: block;
-            margin-top: 7px;
-            color: #8a96a8;
-            font-size: 12px;
+            box-shadow: 0 0 0 3px rgba(71,118,208,0.11);
         }
 
         .role-label {
-            display: inline-block;
-            padding: 7px 12px;
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 14px;
             background: #eaf0ff;
             color: #315fbd;
             border-radius: 20px;
@@ -372,15 +436,26 @@ function e($value) {
             text-transform: capitalize;
         }
 
+        .form-help {
+            display: block;
+            margin-top: 9px;
+            color: #8a96a8;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* MESSAGES */
+
         .message {
-            padding: 13px 16px;
-            border-radius: 7px;
+            padding: 14px 17px;
+            border-radius: 8px;
             margin-bottom: 22px;
             font-size: 14px;
+            line-height: 1.5;
         }
 
         .message.success {
-            background: #e8f7ee;
+            background: #eaf7ef;
             color: #187444;
             border: 1px solid #c7ead5;
         }
@@ -391,24 +466,35 @@ function e($value) {
             border: 1px solid #f3cccc;
         }
 
+        /* BUTTONS */
+
         .form-actions {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-            margin-top: 28px;
+            margin-top: 12px;
+            padding-top: 23px;
+            border-top: 1px solid #edf0f5;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 12px 20px;
             border: none;
-            border-radius: 7px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
         }
 
         .btn-primary {
@@ -429,8 +515,10 @@ function e($value) {
             background: #dfe6f0;
         }
 
+        /* ACCOUNT LINKS */
+
         .account-links {
-            margin-top: 22px;
+            margin-top: 23px;
             padding-top: 20px;
             border-top: 1px solid #edf0f5;
         }
@@ -438,13 +526,15 @@ function e($value) {
         .account-links a {
             color: #315fbd;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .account-links a:hover {
             text-decoration: underline;
         }
+
+        /* RESPONSIVE */
 
         @media (max-width: 850px) {
 
@@ -477,22 +567,40 @@ function e($value) {
             }
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
 
             .main-content {
-                padding: 15px;
+                padding: 17px;
             }
 
             .profile-card {
                 padding: 20px;
             }
 
-            .sidebar-menu {
-                grid-template-columns: 1fr;
-            }
-
             .page-header h1 {
                 font-size: 23px;
+            }
+
+            .page-title-group {
+                align-items: flex-start;
+            }
+
+            .page-icon {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .sidebar-menu {
+                grid-template-columns: 1fr;
             }
 
             .form-actions {
@@ -501,8 +609,14 @@ function e($value) {
             }
 
             .form-actions .btn {
+                width: 100%;
                 text-align: center;
             }
+
+            .profile-identity {
+                padding: 14px;
+            }
+
         }
 
     </style>
@@ -585,12 +699,22 @@ function e($value) {
 
         <div class="page-header">
 
-            <div>
-                <h1>My Profile</h1>
+            <div class="page-title-group">
 
-                <p>
-                    Manage your administrator account information.
-                </p>
+                <div class="page-icon">◉</div>
+
+                <div>
+                    <h1>My Profile</h1>
+
+                    <p>
+                        Manage your administrator account information.
+                    </p>
+
+                    <div class="breadcrumb">
+                        Admin Panel / My Account / My Profile
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -610,20 +734,28 @@ function e($value) {
                 <h2>Profile Information</h2>
 
                 <p>
-                    Update your name and email address below.
+                    Keep your administrator details up to date.
+                    You can change your name and email address here.
                 </p>
 
             </div>
 
-            <div class="profile-avatar">
-                <?php
-                    echo e(
-                        strtoupper(
-                            substr(trim($formName), 0, 1)
-                        )
-                    );
-                ?>
+            <div class="profile-identity">
+
+                <div class="profile-avatar">
+                    <?php echo e($avatarInitial); ?>
+                </div>
+
+                <div>
+                    <h3><?php echo e($formName); ?></h3>
+                    <p><?php echo e($formEmail); ?></p>
+                </div>
+
             </div>
+
+            <h3 class="form-section-title">
+                Personal Information
+            </h3>
 
             <form method="POST">
 
@@ -633,46 +765,50 @@ function e($value) {
                     value="<?php echo e($_SESSION["csrf_token"]); ?>"
                 >
 
-                <div class="form-group">
+                <div class="form-grid">
 
-                    <label for="name">
-                        Full Name
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        class="form-control"
-                        value="<?php echo e($formName); ?>"
-                        maxlength="100"
-                        required
-                    >
+                        <label for="name">
+                            Full Name
+                        </label>
 
-                </div>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-control"
+                            value="<?php echo e($formName); ?>"
+                            maxlength="100"
+                            required
+                        >
 
-                <div class="form-group">
+                    </div>
 
-                    <label for="email">
-                        Email Address
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="form-control"
-                        value="<?php echo e($formEmail); ?>"
-                        maxlength="254"
-                        required
-                    >
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control"
+                            value="<?php echo e($formEmail); ?>"
+                            maxlength="254"
+                            required
+                        >
+
+                    </div>
 
                 </div>
 
                 <div class="form-group">
 
                     <label>
-                        Admin Role
+                        Administrator Role
                     </label>
 
                     <div>
@@ -693,7 +829,7 @@ function e($value) {
                         type="submit"
                         class="btn btn-primary"
                     >
-                        Update Profile
+                        Save Changes
                     </button>
 
                     <a

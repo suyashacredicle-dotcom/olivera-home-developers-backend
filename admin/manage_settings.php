@@ -38,7 +38,6 @@ $messageType = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // Verify CSRF token
     $submittedToken = $_POST["csrf_token"] ?? "";
     $sessionToken = $_SESSION["csrf_token"] ?? "";
 
@@ -52,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit("Invalid request. Please reload the page.");
     }
 
-    // Get submitted settings
     $websiteNameInput = $_POST["website_name"] ?? "";
     $websiteEmailInput = $_POST["website_email"] ?? "";
     $websitePhoneInput = $_POST["website_phone"] ?? "";
@@ -151,7 +149,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 } else {
 
-                    // Check actual image type
                     $imageInfo = @getimagesize($file["tmp_name"]);
 
                     $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -182,13 +179,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         if (!is_dir($uploadDirectory)) {
 
-                            $message =
-                                "Upload directory does not exist.";
+                            $message = "Upload directory does not exist.";
 
                         } elseif (!is_writable($uploadDirectory)) {
 
-                            $message =
-                                "Upload directory is not writable.";
+                            $message = "Upload directory is not writable.";
 
                         } else {
 
@@ -245,7 +240,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     ]);
                 }
 
-                // Save logo path if a new logo was uploaded
                 if ($newLogoPath !== null) {
 
                     $stmt->execute([
@@ -256,7 +250,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $pdo->commit();
 
-                // Rotate CSRF token after successful save
                 $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
 
                 $message = "Website settings saved successfully!";
@@ -270,7 +263,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 error_log($e->getMessage());
 
-                // Remove newly uploaded file if database save fails
                 if ($newLogoPath !== null) {
 
                     $newFile = __DIR__ . "/../" . $newLogoPath;
@@ -303,7 +295,6 @@ $stmt = $pdo->query("
 $savedSettings = [];
 
 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
     $savedSettings[$row["setting_key"]] = $row["setting_value"];
 }
 
@@ -313,7 +304,6 @@ $websitePhone = $savedSettings["website_phone"] ?? "";
 $websiteAddress = $savedSettings["website_address"] ?? "";
 $websiteLogo = $savedSettings["website_logo"] ?? "";
 
-// Validate stored logo path before displaying it
 $validLogo = "";
 
 if (
@@ -335,7 +325,6 @@ if (
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Website Settings | Admin Panel</title>
@@ -344,10 +333,16 @@ if (
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         .settings-page {
-            max-width: 1250px;
+            width: 100%;
+            max-width: 1180px;
             margin: 0 auto;
-            padding: 10px 5px 35px;
+            padding: 12px 8px 40px;
+            color: #1e293b;
         }
 
         .settings-header {
@@ -356,18 +351,44 @@ if (
             align-items: center;
             flex-wrap: wrap;
             gap: 18px;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
+            padding: 26px 28px;
+            background: linear-gradient(120deg, #ffffff, #f1f6ff);
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+        }
+
+        .settings-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .settings-heading-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: #e8efff;
+            color: #2454b8;
+            border-radius: 12px;
+            font-size: 23px;
         }
 
         .settings-header h1 {
             color: #172554;
-            font-size: 28px;
-            margin: 0 0 8px;
+            font-size: 26px;
+            font-weight: 750;
+            margin: 0 0 7px;
+            letter-spacing: -0.5px;
         }
 
         .settings-header p {
             color: #64748b;
-            font-size: 14px;
+            font-size: 13px;
+            line-height: 1.6;
             margin: 0;
         }
 
@@ -375,77 +396,101 @@ if (
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             padding: 11px 17px;
-            background: #1e40af;
-            color: #ffffff;
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #dbe3ef;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 9px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 650;
+            transition: 0.2s ease;
         }
 
         .settings-back-btn:hover {
-            background: #1e3a8a;
-            color: #ffffff;
+            background: #eff4ff;
+            border-color: #b8c9ef;
+            color: #1e40af;
         }
 
         .settings-alert {
-            padding: 14px 18px;
+            padding: 15px 18px;
             margin-bottom: 22px;
-            border-radius: 9px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
         }
 
         .settings-alert.success {
-            background: #dcfce7;
+            background: #ecfdf3;
             color: #166534;
-            border: 1px solid #86efac;
+            border: 1px solid #bbf7d0;
         }
 
         .settings-alert.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+            background: #fff1f2;
+            color: #9f1239;
+            border: 1px solid #fecdd3;
         }
 
         .settings-panel {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            border-radius: 14px;
+            margin-bottom: 23px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.035);
             overflow: hidden;
         }
 
         .settings-panel-header {
-            padding: 22px 25px;
-            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 21px 25px;
+            background: #fbfcfe;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .settings-section-icon {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #2454b8;
+            background: #eaf0ff;
+            border-radius: 10px;
+            font-size: 18px;
         }
 
         .settings-panel-header h2 {
             color: #172554;
-            font-size: 19px;
-            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 750;
+            margin: 0 0 5px;
         }
 
         .settings-panel-header p {
-            color: #64748b;
-            font-size: 13px;
+            color: #8290a3;
+            font-size: 12px;
             margin: 0;
+            line-height: 1.5;
         }
 
         .settings-panel-body {
-            padding: 25px;
+            padding: 26px;
         }
 
         .settings-form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px 23px;
         }
 
         .settings-form-group {
+            min-width: 0;
             margin-bottom: 20px;
         }
 
@@ -465,15 +510,19 @@ if (
         .settings-form-group textarea {
             display: block;
             width: 100%;
-            box-sizing: border-box;
             padding: 12px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 14px;
+            border: 1px solid #d8e0eb;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 13px;
             color: #334155;
             background: #ffffff;
             outline: none;
-            transition: 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .settings-form-group input {
+            min-height: 44px;
         }
 
         .settings-form-group textarea {
@@ -484,40 +533,46 @@ if (
 
         .settings-form-group input:focus,
         .settings-form-group textarea:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+            border-color: #4776d0;
+            box-shadow: 0 0 0 3px rgba(59, 111, 205, 0.10);
+        }
+
+        .settings-form-group input::placeholder,
+        .settings-form-group textarea::placeholder {
+            color: #a0acbc;
         }
 
         .settings-help {
             display: block;
-            color: #94a3b8;
-            font-size: 12px;
-            margin-top: 7px;
+            color: #8794a7;
+            font-size: 11px;
+            margin-top: 8px;
+            line-height: 1.5;
         }
 
         .settings-logo-box {
             display: flex;
             align-items: center;
-            gap: 25px;
+            gap: 24px;
             flex-wrap: wrap;
-            padding: 20px;
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            border-radius: 10px;
-            margin-bottom: 22px;
+            padding: 21px;
+            background: #f8faff;
+            border: 1px dashed #cbd7e9;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
 
         .settings-logo-preview {
-            width: 200px;
-            height: 120px;
+            width: 210px;
+            height: 125px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 13px;
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 9px;
-            box-sizing: border-box;
+            border: 1px solid #e3e9f2;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         }
 
         .settings-logo-preview img {
@@ -527,56 +582,105 @@ if (
         }
 
         .settings-logo-empty {
-            color: #94a3b8;
-            font-size: 13px;
+            color: #9aa7b8;
+            font-size: 12px;
             text-align: center;
+        }
+
+        .settings-logo-info {
+            flex: 1;
+            min-width: 190px;
         }
 
         .settings-logo-info h3 {
             color: #172554;
             font-size: 15px;
-            margin: 0 0 7px;
+            font-weight: 750;
+            margin: 0 0 9px;
         }
 
         .settings-logo-info p {
             color: #64748b;
-            font-size: 13px;
+            font-size: 12px;
             margin: 0;
-            line-height: 1.6;
+            line-height: 1.9;
         }
 
         .settings-file-input {
-            padding: 12px !important;
+            padding: 10px !important;
             background: #f8fafc !important;
+            border: 1px dashed #cbd5e1 !important;
+        }
+
+        .settings-file-input::file-selector-button {
+            padding: 8px 12px;
+            margin-right: 12px;
+            border: 0;
+            border-radius: 6px;
+            background: #e8efff;
+            color: #244fa8;
+            font-size: 12px;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+        .settings-save-area {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            padding: 19px 22px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .settings-save-note {
+            margin-right: auto;
+            color: #8491a3;
+            font-size: 12px;
         }
 
         .settings-save-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 9px;
             padding: 13px 23px;
-            background: #1e40af;
+            background: #2454b8;
             color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border: 1px solid #2454b8;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.2s ease;
         }
 
         .settings-save-btn:hover {
-            background: #1e3a8a;
+            background: #1d4295;
+            border-color: #1d4295;
+            box-shadow: 0 4px 12px rgba(36, 84, 184, 0.18);
+            transform: translateY(-1px);
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 760px) {
+
+            .settings-page {
+                padding: 8px 2px 25px;
+            }
+
+            .settings-header {
+                padding: 20px;
+            }
 
             .settings-header h1 {
-                font-size: 23px;
+                font-size: 22px;
             }
 
             .settings-form-grid {
                 grid-template-columns: 1fr;
+                gap: 0;
             }
 
             .settings-form-group.full-width {
@@ -584,11 +688,56 @@ if (
             }
 
             .settings-panel-body {
-                padding: 18px;
+                padding: 19px;
             }
 
             .settings-logo-box {
-                gap: 15px;
+                gap: 16px;
+                padding: 16px;
+            }
+
+            .settings-logo-preview {
+                width: 100%;
+                max-width: 230px;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
+            .settings-heading {
+                gap: 10px;
+            }
+
+            .settings-heading-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 19px;
+            }
+
+            .settings-header {
+                align-items: flex-start;
+            }
+
+            .settings-back-btn {
+                width: 100%;
+            }
+
+            .settings-panel-header {
+                padding: 17px;
+            }
+
+            .settings-save-area {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .settings-save-note {
+                margin: 0 0 5px;
+            }
+
+            .settings-save-btn {
+                width: 100%;
             }
 
         }
@@ -653,20 +802,24 @@ if (
 
             <div class="settings-header">
 
-                <div>
+                <div class="settings-heading">
 
-                    <h1>Website Settings</h1>
+                    <div class="settings-heading-icon">⚙</div>
 
-                    <p>
-                        Welcome,
-                        <?php echo e($_SESSION["admin_name"] ?? "Admin"); ?>.
-                        Manage your website's general information and logo.
-                    </p>
+                    <div>
+                        <h1>Website Settings</h1>
+
+                        <p>
+                            Welcome,
+                            <?php echo e($_SESSION["admin_name"] ?? "Admin"); ?>.
+                            Manage your website information and branding.
+                        </p>
+                    </div>
 
                 </div>
 
                 <a href="dashboard.php" class="settings-back-btn">
-                    Back to Dashboard
+                    ← Back to Dashboard
                 </a>
 
             </div>
@@ -706,11 +859,15 @@ if (
 
                     <div class="settings-panel-header">
 
-                        <h2>General Website Information</h2>
+                        <div class="settings-section-icon">▤</div>
 
-                        <p>
-                            Update your website's basic contact information.
-                        </p>
+                        <div>
+                            <h2>General Website Information</h2>
+
+                            <p>
+                                Update your website's basic contact information.
+                            </p>
+                        </div>
 
                     </div>
 
@@ -798,11 +955,15 @@ if (
 
                     <div class="settings-panel-header">
 
-                        <h2>Website Logo</h2>
+                        <div class="settings-section-icon">▧</div>
 
-                        <p>
-                            Manage the logo displayed on your website.
-                        </p>
+                        <div>
+                            <h2>Website Logo</h2>
+
+                            <p>
+                                Manage the logo displayed on your website.
+                            </p>
+                        </div>
 
                     </div>
 
@@ -834,6 +995,7 @@ if (
                                 <h3>Current Website Logo</h3>
 
                                 <p>
+
                                     <?php if ($validLogo !== ""): ?>
 
                                         Your website logo is currently saved.
@@ -848,6 +1010,7 @@ if (
                                     Supported formats: JPG, PNG and WebP.
                                     <br>
                                     Maximum file size: 2 MB.
+
                                 </p>
 
                             </div>
@@ -880,12 +1043,20 @@ if (
 
                 <!-- SAVE BUTTON -->
 
-                <button
-                    type="submit"
-                    class="settings-save-btn"
-                >
-                    Save Website Settings
-                </button>
+                <div class="settings-save-area">
+
+                    <span class="settings-save-note">
+                        Save your changes when you're finished.
+                    </span>
+
+                    <button
+                        type="submit"
+                        class="settings-save-btn"
+                    >
+                        ✓ Save Website Settings
+                    </button>
+
+                </div>
 
             </form>
 
